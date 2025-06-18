@@ -48,9 +48,7 @@
         .section-title h2 { font-size: 2.8rem; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--primary-glow); margin-bottom: 1rem; }
         .section-title p { font-size: 1.15rem; color: var(--text-secondary-color); max-width: 700px; margin: 0 auto; }
 
-        /* ---
-        --- NEW GALLERY STYLES (Cyber-Glow Theme)
-        --- */
+        /* --- GALLERY STYLES (Cyber-Glow Theme) --- */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -127,6 +125,8 @@
         <div class="section-title">
             <h2>কমিউনিটি হাব</h2>
             <p>আমাদের ক্রিয়েটিভ কমিউনিটির সর্বশেষ পোস্ট এবং ডিজাইনগুলো দেখুন।</p>
+            
+            <div style="text-align: center; margin: 30px; background: #ff0034; padding: 15px;">আমরা আমাদের সিস্টেম উউন্নত করার লক্ষ্যে আপডেট করছি, বর্তমানে কমিউনিটি পোস্টের পেজটি আপডেট করছি, দয়া করে কিছুক্ষণ পরে আসুন!</div>
         </div>
 
         <!-- GALLERY CONTENT GRID -->
@@ -137,14 +137,15 @@
 
     <!-- JS Logic -->
     <script>
-        // --- Gallery Post Data ---
+        // --- Gallery Post Data (UPDATED TIMESTAMPS) ---
+        const now = new Date();
         const postsData = [
-            { id: 1, user: 'cyber_artist', avatar: 'https://i.pravatar.cc/150?img=12', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500', likes: 182, caption: 'আমার নতুন ডিজিটাল আর্টওয়ার্ক। কেমন লাগলো জানাবেন!', timestamp: '2025-07-20T10:00:00Z' },
-            { id: 2, user: 'glitch_effect', avatar: 'https://i.pravatar.cc/150?img=25', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726a?w=500', likes: 255, caption: 'রেট্রো ভাইব... 🕹️', timestamp: '2025-07-19T18:30:00Z' },
-            { id: 3, user: 'neon_dreamer', avatar: 'https://i.pravatar.cc/150?img=31', image: 'https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=500', likes: 310, caption: 'রাতের শহরের নিয়ন আলো।', timestamp: '2025-07-18T12:00:00Z' },
-            { id: 4, user: 'code_master', avatar: 'https://i.pravatar.cc/150?img=45', image: 'https://images.unsplash.com/photo-1605379399642-870262d3d051?w=500', likes: 420, caption: 'কোডিং সেশনের একটি মুহূর্ত।', timestamp: '2025-07-17T09:00:00Z' },
-            { id: 5, user: 'future_tech', avatar: 'https://i.pravatar.cc/150?img=52', image: 'https://images.unsplash.com/photo-1526374965328-5f61d4dc18c5?w=500', likes: 389, caption: 'ডিজিটাল ওয়ার্ল্ড।', timestamp: '2025-07-16T15:45:00Z' },
-            { id: 6, user: 'space_explorer', avatar: 'https://i.pravatar.cc/150?img=60', image: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=500', likes: 512, caption: 'মহাকাশের অসীম সৌন্দর্য।', timestamp: '2025-07-15T21:00:00Z' },
+            { id: 1, user: 'cyber_artist', avatar: 'https://i.pravatar.cc/150?img=12', image: 'https://i.postimg.cc/X7W5fSrc/Screenshot-20250618-210059-01.jpg', likes: 182, caption: 'আমার নতুন ডিজিটাল আর্টওয়ার্ক। কেমন লাগলো জানাবেন!', timestamp: new Date(now.getTime() - 2 * 60 * 1000).toISOString() }, // 2 minutes ago
+            { id: 2, user: 'glitch_effect', avatar: 'https://i.pravatar.cc/150?img=25', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726a?w=500', likes: 255, caption: 'রেট্রো ভাইব... 🕹️', timestamp: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString() }, // 5 hours ago
+            { id: 3, user: 'neon_dreamer', avatar: 'https://i.pravatar.cc/150?img=31', image: 'https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=500', likes: 310, caption: 'রাতের শহরের নিয়ন আলো।', timestamp: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString() }, // 1 day ago
+            { id: 4, user: 'code_master', avatar: 'https://i.pravatar.cc/150?img=45', image: 'https://images.unsplash.com/photo-1605379399642-870262d3d051?w=500', likes: 420, caption: 'কোডিং সেশনের একটি মুহূর্ত।', timestamp: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString() }, // 3 days ago
+            { id: 5, user: 'future_tech', avatar: 'https://i.pravatar.cc/150?img=52', image: 'https://images.unsplash.com/photo-1526374965328-5f61d4dc18c5?w=500', likes: 389, caption: 'ডিজিটাল ওয়ার্ল্ড।', timestamp: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString() }, // 7 days ago
+            { id: 6, user: 'space_explorer', avatar: 'https://i.pravatar.cc/150?img=60', image: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=500', likes: 512, caption: 'মহাকাশের অসীম সৌন্দর্য।', timestamp: new Date(now.getTime() - 35 * 24 * 60 * 60 * 1000).toISOString() }, // 1 month ago
         ];
 
         // --- Utility Functions ---
@@ -163,12 +164,35 @@
             setTimeout(() => el.classList.add('show'), 10);
             setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 500); }, 2500);
         }
+        
+        // --- UPDATED formatTimeAgo Function ---
         function formatTimeAgo(dateString) {
-            const date = new Date(dateString); const now = new Date(); const diff = now - date;
-            const seconds = Math.round(diff / 1000);
-            const intervals = { বছর: 31536000, মাস: 2592000, দিন: 86400, ঘন্টা: 3600, মিনিট: 60 };
-            for (const i in intervals) { let counter = Math.floor(seconds / intervals[i]); if (counter > 0) return `${counter} ${i} আগে`; }
-            return "এইমাত্র";
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.round((now - date) / 1000);
+
+            if (seconds < 0) { // Handles any future date gracefully
+                return date.toLocaleDateString("bn-BD");
+            }
+            if (seconds < 60) {
+                return "এইমাত্র";
+            }
+            
+            const intervals = {
+                বছর: 31536000,
+                মাস: 2592000,
+                দিন: 86400,
+                ঘন্টা: 3600,
+                মিনিট: 60
+            };
+
+            for (const i in intervals) {
+                const counter = Math.floor(seconds / intervals[i]);
+                if (counter > 0) {
+                    return `${counter} ${i} আগে`;
+                }
+            }
+            return "এইমাত্র"; // Fallback
         }
         
         // --- Main Application Logic ---
