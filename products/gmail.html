@@ -72,8 +72,8 @@
 <body>
     <canvas id="particle-canvas"></canvas>
     <header class="header">
-        <a href="index.html" class="logo"><i class="fa-solid fa-rocket"></i> RiseShop</a>
-        <a href="index.html" id="headerAuthBtn" class="btn">লগইন</a>
+        <a href="/" class="logo"><i class="fa-solid fa-rocket"></i> RiseShop</a>
+        <a href="/login" id="headerAuthBtn" class="btn">লগইন</a>
     </header>
 
     <main class="buy-container">
@@ -202,13 +202,13 @@
                 try {
                     userDetails = JSON.parse(decodeURIComponent(userCookie));
                     deliveryEmailInput.value = userDetails.email;
-                    headerAuthBtn.href = 'profile.html';
+                    headerAuthBtn.href = '/profile';
                     headerAuthBtn.textContent = 'প্রোফাইল';
                 } catch (e) {
                     console.error("Cookie parsing error:", e);
                 }
             } else {
-                 headerAuthBtn.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                 headerAuthBtn.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
                  headerAuthBtn.textContent = 'লগইন';
             }
 
@@ -264,7 +264,7 @@
 
                 if (!userDetails) {
                     alert('এই অর্ডারটি সম্পন্ন করতে অনুগ্রহ করে আগে লগইন করুন।');
-                    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                    window.location.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
                     return;
                 }
 
@@ -298,7 +298,7 @@
                 document.cookie = `orderDetails=${JSON.stringify(orderDetails)};${expires};path=/`;
 
                 alert('আপনার অর্ডারটি গ্রহণ করা হয়েছে। এখন পেমেন্ট পেজে নিয়ে যাওয়া হচ্ছে...');
-                window.location.href = 'payment.html';
+                window.location.href = '/payment';
             });
 
             updatePrice();
