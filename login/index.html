@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন - রাইজশপ</title>
+    <!-- Common Styles and Fonts (Copied from signup.html) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary-glow: #00f5c3; --secondary-glow: #ff00e5; --bg-color: #0a0a14; --card-bg-color: rgba(16, 20, 42, 0.6); --text-color: #e0e0e0; --text-secondary-color: #a0a0b0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+        .auth-container { position: relative; width: 100%; max-width: 450px; padding: 3rem; background-color: var(--card-bg-color); backdrop-filter: blur(8px); border-radius: 15px; overflow: hidden; z-index: 1; text-align: center; }
+        .auth-container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--primary-glow), var(--secondary-glow), transparent 30%); z-index: -2; animation: spin 4s linear infinite; }
+        .auth-container::after { content: ''; position: absolute; top: 2px; left: 2px; width: calc(100% - 4px); height: calc(100% - 4px); background: #0c0c1b; border-radius: 13px; z-index: -1; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .auth-logo { font-family: 'Poppins', sans-serif; font-size: 2.2rem; font-weight: 700; text-decoration: none; color: #fff; text-shadow: 0 0 8px var(--primary-glow); margin-bottom: 0.5rem; }
+        .auth-logo i { margin-right: 10px; }
+        .auth-title { font-size: 1.5rem; color: var(--primary-glow); margin-bottom: 2rem; }
+        .input-group { position: relative; margin-bottom: 1.5rem; }
+        .input-group input { width: 100%; padding: 1rem; background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: var(--text-color); font-size: 1rem; }
+        .input-group input:focus { border-color: var(--primary-glow); outline: none; box-shadow: 0 0 10px rgba(0, 245, 195, 0.3); }
+        .btn { display: inline-block; width: 100%; padding: 0.9rem 2.5rem; border: 2px solid var(--primary-glow); border-radius: 50px; text-decoration: none; font-weight: 700; transition: all 0.4s ease; background: transparent; color: var(--primary-glow); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+        .btn:hover { background: var(--primary-glow); color: var(--bg-color); box-shadow: 0 0 25px rgba(0, 245, 195, 0.5); }
+        .switch-link { margin-top: 1.5rem; color: var(--text-secondary-color); }
+        .switch-link a { color: var(--primary-glow); text-decoration: none; font-weight: 600; }
+        #message { margin-top: 1rem; color: #ff4d4d; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="auth-container">
+        <a href="index.html" class="auth-logo"><i class="fa-solid fa-rocket"></i> RiseShop</a>
+        <h2 class="auth-title">আপনার একাউন্টে লগইন করুন</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="email" id="email" placeholder="আপনার ইমেইল" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="পাসওয়ার্ড" required>
+            </div>
+            <button type="submit" class="btn">লগইন</button>
+        </form>
+        <p id="message"></p>
+        <div class="switch-link">
+            একাউন্ট নেই? <a href="signup.html">সাইন আপ করুন</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // URL থেকে প্যারামিটারগুলো নিন
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailFromUrl = urlParams.get('email');
+            const passwordFromUrl = urlParams.get('password');
+
+            // যদি URL-এ ইমেইল ও পাসওয়ার্ড থাকে, তাহলে ইনপুট ফিল্ড পূরণ করুন
+            if (emailFromUrl && passwordFromUrl) {
+                document.getElementById('email').value = decodeURIComponent(emailFromUrl);
+                document.getElementById('password').value = decodeURIComponent(passwordFromUrl);
+            }
+        });
+
+        // Helper function to get a cookie
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Check if user is already logged in
+        if (getCookie('userDetails')) {
+            window.location.href = 'profile.html';
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        const messageElement = document.getElementById('message');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            messageElement.textContent = '';
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const userCookie = getCookie('userDetails');
+
+            if (!userCookie) {
+                messageElement.textContent = 'কোনো ব্যবহারকারী পাওয়া যায়নি। অনুগ্রহ করে সাইন আপ করুন।';
+                return;
+            }
+
+            const storedUserDetails = JSON.parse(decodeURIComponent(userCookie));
+            
+            if (email === storedUserDetails.email && password === storedUserDetails.password) {
+                // Login successful
+                alert('লগইন সফল হয়েছে!');
+                window.location.href = 'profile.html';
+            } else {
+                // Login failed
+                messageElement.textContent = 'ইমেইল অথবা পাসওয়ার্ড ভুল হয়েছে।';
+            }
+        });
+        
+        // Particle JS (Copied)
+        const canvas = document.getElementById('particle-canvas'); if (canvas) { const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particlesArray; class Particle { constructor(x, y, dX, dY, s, c) { this.x=x; this.y=y; this.directionX=dX; this.directionY=dY; this.size=s; this.color=c; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); } update() { if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX; if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY; this.x += this.directionX; this.y += this.directionY; this.draw(); } } function init() { particlesArray = []; let num = (canvas.height * canvas.width) / 9000; for (let i = 0; i < num; i++) { let s = (Math.random() * 2) + 1, x = (Math.random() * ((innerWidth - s * 2) - (s * 2)) + s * 2), y = (Math.random() * ((innerHeight - s * 2) - (s * 2)) + s * 2), dX = (Math.random() * .4) - .2, dY = (Math.random() * .4) - .2, c = 'rgba(0, 245, 195, 0.5)'; particlesArray.push(new Particle(x, y, dX, dY, s, c)); } } function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update(); } init(); animate(); window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; init(); }); }
+    </script>
+</body>
+</html>
