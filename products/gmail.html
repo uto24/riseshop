@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>জিমেইল আইডি কিনুন - রাইজশপ</title>
+    <!-- Common Styles and Fonts (Copied) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary-glow: #00f5c3; --secondary-glow: #ff00e5; --bg-color: #0a0a14; --card-bg-color: rgba(16, 20, 42, 0.7); --text-color: #e0e0e0; --text-secondary-color: #a0a0b0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+        .header { padding: 1.2rem 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(10, 10, 20, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 245, 195, 0.2); }
+        .logo { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700; text-decoration: none; color: #fff; text-shadow: 0 0 5px var(--primary-glow); }
+        .logo i { margin-right: 8px; }
+        .btn { display: inline-block; padding: 0.6rem 1.8rem; border: 2px solid var(--primary-glow); border-radius: 50px; text-decoration: none; font-weight: 700; transition: all 0.4s ease; background: transparent; color: var(--primary-glow); font-size: 0.9rem; }
+        .btn:hover { background: var(--primary-glow); color: var(--bg-color); }
+
+        .buy-container { padding: 4rem 5%; max-width: 1400px; margin: 0 auto; }
+        .page-title { text-align: center; font-size: 2.8rem; color: #fff; text-shadow: 0 0 10px var(--primary-glow); margin-bottom: 3rem; }
+        
+        .buy-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+        
+        .product-details, .purchase-form { background: var(--card-bg-color); padding: 2rem; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); }
+        .card-title { font-size: 1.6rem; color: var(--primary-glow); margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0, 245, 195, 0.3); }
+        .card-title i { margin-right: 10px; }
+        
+        .features-list { list-style: none; padding-left: 0; }
+        .features-list li { display: flex; align-items: flex-start; margin-bottom: 1rem; font-size: 1.1rem; }
+        .features-list li i { color: var(--primary-glow); margin-right: 15px; margin-top: 5px; }
+
+        .category-selection .card-title { margin-top: 2rem; }
+        .category-grid { display: flex; flex-direction: column; gap: 1rem; }
+        .category-grid input[type="radio"] { display: none; }
+        .category-grid label { display: block; padding: 1rem 1.5rem; border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 10px; cursor: pointer; transition: all 0.3s ease; }
+        .category-grid label:hover { background: rgba(0, 245, 195, 0.1); border-color: var(--primary-glow); }
+        .category-grid input[type="radio"]:checked + label { background: rgba(0, 245, 195, 0.2); border-color: var(--primary-glow); box-shadow: 0 0 15px rgba(0, 245, 195, 0.3); }
+        .category-grid .cat-name { display: block; font-size: 1.2rem; font-weight: 600; color: #fff; }
+        .category-grid .cat-price { color: var(--primary-glow); font-family: 'Poppins', sans-serif; }
+        .category-grid .cat-desc { font-size: 0.9rem; color: var(--text-secondary-color); }
+
+        .form-group { margin-top: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-secondary-color); }
+        .form-group input { width: 100%; padding: 0.8rem; background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: var(--text-color); font-size: 1rem; }
+
+        .quantity-selector { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; }
+        .quantity-selector .btn-qty { background: transparent; border: 1px solid var(--primary-glow); color: var(--primary-glow); width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; }
+        .quantity-selector #quantity { font-size: 1.5rem; font-family: 'Poppins', sans-serif; }
+
+        .price-summary { margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; }
+        .price-line { display: flex; justify-content: space-between; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .price-line.total { font-size: 1.5rem; font-weight: 700; color: var(--primary-glow); }
+        .price-line #discountAmount { color: #ff4d4d; }
+
+        .coupon-group { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        #couponMessage { font-size: 0.9rem; margin-top: 0.5rem; height: 1em; }
+        #couponMessage.success { color: var(--primary-glow); }
+        #couponMessage.error { color: #ff4d4d; }
+
+        .btn-submit { display: block; width: 100%; padding: 1rem; border: 2px solid var(--primary-glow); border-radius: 50px; font-weight: 700; transition: all 0.4s ease; background: var(--primary-glow); color: var(--bg-color); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; font-size: 1.1rem; margin-top: 2rem; }
+        .btn-submit:disabled { background: #555; border-color: #555; color: #999; cursor: not-allowed; }
+
+        @media (max-width: 992px) {
+            .buy-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <header class="header">
+        <a href="index.html" class="logo"><i class="fa-solid fa-rocket"></i> RiseShop</a>
+        <a href="index.html" id="headerAuthBtn" class="btn">লগইন</a>
+    </header>
+
+    <main class="buy-container">
+        <h1 class="page-title">জিমেইল আইডি কিনুন</h1>
+        <div class="buy-grid">
+            
+            <div class="product-details">
+                <h2 class="card-title"><i class="fa-solid fa-envelope"></i>জিমেইল আইডির ফিচারসমূহ</h2>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-check-circle"></i>উচ্চ নিরাপত্তা এবং শক্তিশালী প্রোফাইল।</li>
+                    <li><i class="fa-solid fa-check-circle"></i>গুগলের সকল সার্ভিস (Drive, Photos, YouTube) ব্যবহারের জন্য প্রস্তুত।</li>
+                    <li><i class="fa-solid fa-check-circle"></i>অন্যান্য সাইটে রেজিস্ট্রেশন ও ভেরিফিকেশনের জন্য উপযোগী।</li>
+                    <li><i class="fa-solid fa-check-circle"></i>PVA (Phone Verified Account) অপশন, যা আপনার একাউন্টকে আরও সুরক্ষিত রাখে।</li>
+                    <li><i class="fa-solid fa-check-circle"></i>প্রতিটি আইডির সাথে রিকভারি অপশন সেট করার সুবিধা।</li>
+                </ul>
+
+                <h2 class="card-title" style="margin-top: 2rem;"><i class="fa-solid fa-truck-fast"></i>ডেলিভারি প্রসেস</h2>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-envelope-circle-check"></i>পেমেন্ট সম্পন্ন হওয়ার ৫-১০ মিনিটের মধ্যে আপনার দেওয়া ইমেইলে ডেলিভারি করা হবে।</li>
+                    <li><i class="fa-solid fa-file-alt"></i>ইমেইলে আপনি আইডির ইমেইল এড্রেস, পাসওয়ার্ড এবং রিকভারি তথ্য পাবেন।</li>
+                    <li><i class="fa-solid fa-headset"></i>যেকোনো সমস্যায় আমাদের ২৪/৭ লাইভ সাপোর্টে যোগাযোগ করতে পারবেন।</li>
+                </ul>
+            </div>
+
+            <div class="purchase-form">
+                <form id="buyForm">
+                    <h2 class="card-title"><i class="fa-solid fa-shopping-cart"></i>আপনার অর্ডার</h2>
+                    
+                    <div class="category-selection">
+                        <div class="category-grid">
+                            <input type="radio" id="cat1" name="id_category" value="100">
+                            <label for="cat1">
+                                <span class="cat-name">বেসিক জিমেইল <span class="cat-price">৳১০০</span></span>
+                                <span class="cat-desc">সাধারণ ব্যবহারের জন্য, নতুন তৈরি।</span>
+                            </label>
+                            
+                            <input type="radio" id="cat2" name="id_category" value="250">
+                            <label for="cat2">
+                                <span class="cat-name">PVA জিমেইল <span class="cat-price">৳২৫০</span></span>
+                                <span class="cat-desc">ফোন ভেরিফাইড, উচ্চ নিরাপত্তা সম্পন্ন।</span>
+                            </label>
+
+                            <input type="radio" id="cat3" name="id_category" value="450">
+                            <label for="cat3">
+                                <span class="cat-name">ওল্ড জিমেইল <span class="cat-price">৳৪৫০</span></span>
+                                <span class="cat-desc">১+ বছর পুরনো, ট্রাস্টেড এবং শক্তিশালী।</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deliveryEmail">ডেলিভারি ইমেইল</label>
+                        <input type="email" id="deliveryEmail" placeholder="যে ইমেইলে আইডি পাঠানো হবে" required>
+                    </div>
+
+                    <div class="quantity-selector">
+                        <label>পরিমাণ</label>
+                        <div>
+                            <button type="button" class="btn-qty" id="qty-minus">-</button>
+                            <span id="quantity" style="margin: 0 1rem;">1</span>
+                            <button type="button" class="btn-qty" id="qty-plus">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="price-summary">
+                        <div class="price-line">
+                            <span>সাবটোটাল</span>
+                            <span id="subtotalPrice">৳0</span>
+                        </div>
+                        <div class="price-line">
+                            <span>ডিসকাউন্ট</span>
+                            <span id="discountAmount">- ৳0</span>
+                        </div>
+                        <hr style="border-color: rgba(255,255,255,0.1); margin: 1rem 0;">
+                        <div class="price-line total">
+                            <span>মোট</span>
+                            <span id="totalPrice">৳0</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponCode">কুপন কোড (যদি থাকে)</label>
+                        <div class="coupon-group">
+                            <input type="text" id="couponCode" placeholder="এখানে কুপন দিন">
+                        </div>
+                        <p id="couponMessage"></p>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-submit" disabled>ক্যাটাগরি সিলেক্ট করুন</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DOM Elements ---
+            const form = document.getElementById('buyForm');
+            const categoryRadios = document.querySelectorAll('input[name="id_category"]');
+            const qtyMinusBtn = document.getElementById('qty-minus');
+            const qtyPlusBtn = document.getElementById('qty-plus');
+            const quantitySpan = document.getElementById('quantity');
+            const couponInput = document.getElementById('couponCode');
+            const subtotalEl = document.getElementById('subtotalPrice');
+            const discountEl = document.getElementById('discountAmount');
+            const totalEl = document.getElementById('totalPrice');
+            const couponMessageEl = document.getElementById('couponMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            const deliveryEmailInput = document.getElementById('deliveryEmail');
+            const headerAuthBtn = document.getElementById('headerAuthBtn');
+
+            let quantity = 1;
+            const validCoupons = ['652', '658'];
+            let userDetails = null;
+
+            // --- Helper Functions ---
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            // --- Check Login Status ---
+            const userCookie = getCookie('userDetails');
+            if (userCookie) {
+                try {
+                    userDetails = JSON.parse(decodeURIComponent(userCookie));
+                    deliveryEmailInput.value = userDetails.email;
+                    headerAuthBtn.href = 'profile.html';
+                    headerAuthBtn.textContent = 'প্রোফাইল';
+                } catch (e) {
+                    console.error("Cookie parsing error:", e);
+                }
+            } else {
+                 headerAuthBtn.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                 headerAuthBtn.textContent = 'লগইন';
+            }
+
+            // --- Main Calculation Function ---
+            function updatePrice() {
+                const selectedCategory = document.querySelector('input[name="id_category"]:checked');
+                
+                if (!selectedCategory) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'ক্যাটাগরি সিলেক্ট করুন';
+                    return;
+                }
+                
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'পেমেন্ট করুন';
+
+                const pricePerItem = parseFloat(selectedCategory.value);
+                const subtotal = pricePerItem * quantity;
+                
+                let discount = 0;
+                const couponCode = couponInput.value.trim();
+
+                if (validCoupons.includes(couponCode) && subtotal > 50) {
+                    discount = subtotal * 0.10;
+                    couponMessageEl.textContent = 'কুপন সফলভাবে প্রয়োগ করা হয়েছে!';
+                    couponMessageEl.className = 'success';
+                } else if (couponCode && !validCoupons.includes(couponCode)) {
+                    couponMessageEl.textContent = 'ভুল কুপন কোড।';
+                    couponMessageEl.className = 'error';
+                } else if (couponCode && subtotal <= 50) {
+                    couponMessageEl.textContent = '৳৫০ এর বেশি কেনাকাটায় কুপন প্রযোজ্য।';
+                    couponMessageEl.className = 'error';
+                } else {
+                    couponMessageEl.textContent = '';
+                }
+
+                const total = subtotal - discount;
+
+                subtotalEl.textContent = `৳${total.toFixed(2)}`;
+                discountEl.textContent = `- ৳${discount.toFixed(2)}`;
+                totalEl.textContent = `৳${total.toFixed(2)}`;
+            }
+
+            // --- Event Listeners ---
+            categoryRadios.forEach(radio => radio.addEventListener('change', updatePrice));
+            qtyMinusBtn.addEventListener('click', () => { if (quantity > 1) { quantity--; quantitySpan.textContent = quantity; updatePrice(); } });
+            qtyPlusBtn.addEventListener('click', () => { quantity++; quantitySpan.textContent = quantity; updatePrice(); });
+            couponInput.addEventListener('input', updatePrice);
+
+            // --- Form Submission ---
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (!userDetails) {
+                    alert('এই অর্ডারটি সম্পন্ন করতে অনুগ্রহ করে আগে লগইন করুন।');
+                    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                    return;
+                }
+
+                const selectedCategoryEl = document.querySelector('input[name="id_category"]:checked');
+                if (!selectedCategoryEl) {
+                    alert('অনুগ্রহ করে একটি আইডি ক্যাটাগরি সিলেক্ট করুন।');
+                    return;
+                }
+                
+                if (!deliveryEmailInput.value) {
+                    alert('অনুগ্রহ করে ডেলিভারি ইমেইল দিন।');
+                    return;
+                }
+
+                const categoryLabel = document.querySelector(`label[for="${selectedCategoryEl.id}"] .cat-name`).textContent;
+                const totalText = totalEl.textContent;
+
+                const orderDetails = {
+                    productName: 'Gmail ID', // Changed product name
+                    category: categoryLabel,
+                    quantity: quantity,
+                    totalPrice: totalText,
+                    deliveryEmail: deliveryEmailInput.value,
+                    couponUsed: couponInput.value.trim(),
+                    timestamp: new Date().toISOString()
+                };
+
+                const d = new Date();
+                d.setTime(d.getTime() + (15 * 60 * 1000));
+                let expires = "expires=" + d.toUTCString();
+                document.cookie = `orderDetails=${JSON.stringify(orderDetails)};${expires};path=/`;
+
+                alert('আপনার অর্ডারটি গ্রহণ করা হয়েছে। এখন পেমেন্ট পেজে নিয়ে যাওয়া হচ্ছে...');
+                window.location.href = 'payment.html';
+            });
+
+            updatePrice();
+            
+            // Particle JS
+            const canvas = document.getElementById('particle-canvas'); if (canvas) { const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particlesArray; class Particle { constructor(x, y, dX, dY, s, c) { this.x=x; this.y=y; this.directionX=dX; this.directionY=dY; this.size=s; this.color=c; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); } update() { if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX; if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY; this.x += this.directionX; this.y += this.directionY; this.draw(); } } function init() { particlesArray = []; let num = (canvas.height * canvas.width) / 9000; for (let i = 0; i < num; i++) { let s = (Math.random() * 2) + 1, x = (Math.random() * ((innerWidth - s * 2) - (s * 2)) + s * 2), y = (Math.random() * ((innerHeight - s * 2) - (s * 2)) + s * 2), dX = (Math.random() * .4) - .2, dY = (Math.random() * .4) - .2, c = 'rgba(0, 245, 195, 0.5)'; particlesArray.push(new Particle(x, y, dX, dY, s, c)); } } function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update(); } init(); animate(); window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; init(); }); }
+        });
+    </script>
+</body>
+</html>
