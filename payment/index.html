@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পেমেন্ট - রাইজশপ</title>
+    <!-- Common Styles and Fonts (Copied) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary-glow: #00f5c3; --secondary-glow: #ff00e5; --bg-color: #0a0a14; --card-bg-color: rgba(16, 20, 42, 0.7); --text-color: #e0e0e0; --text-secondary-color: #a0a0b0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+        .header { padding: 1.2rem 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(10, 10, 20, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 245, 195, 0.2); }
+        .logo { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700; text-decoration: none; color: #fff; text-shadow: 0 0 5px var(--primary-glow); }
+        .logo i { margin-right: 8px; }
+
+        .payment-container { padding: 4rem 5%; max-width: 900px; margin: 0 auto; }
+        .page-title { text-align: center; font-size: 2.8rem; color: #fff; text-shadow: 0 0 10px var(--primary-glow); margin-bottom: 3rem; }
+        
+        .payment-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem; }
+        
+        .payment-card { background: var(--card-bg-color); padding: 2rem; border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); }
+        .card-title { font-size: 1.6rem; color: var(--primary-glow); margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0, 245, 195, 0.3); }
+        .card-title i { margin-right: 10px; }
+
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 1.1rem; }
+        .summary-item .label { color: var(--text-secondary-color); }
+        .summary-item .value { color: var(--text-color); font-weight: 600; text-align: right; }
+        .summary-item.total .value { font-size: 1.5rem; color: var(--primary-glow); }
+
+        .method-selection { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .method-selection input[type="radio"] { display: none; }
+        .method-selection label { flex: 1; text-align: center; padding: 1rem; border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 10px; cursor: pointer; transition: all 0.3s ease; }
+        .method-selection label img { height: 30px; }
+        .method-selection input[type="radio"]:checked + label { background: rgba(0, 245, 195, 0.1); border-color: var(--primary-glow); }
+        
+        .payment-instructions { display: none; /* Hidden by default */ }
+        .payment-instructions p { color: var(--text-secondary-color); margin-bottom: 1rem; }
+        .account-number-box { display: flex; justify-content: space-between; align-items: center; background: rgba(10, 10, 20, 0.8); padding: 0.8rem 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        .account-number { font-family: 'Poppins', sans-serif; font-size: 1.3rem; color: var(--primary-glow); letter-spacing: 2px; }
+        .copy-btn { background: transparent; border: 1px solid var(--primary-glow); color: var(--primary-glow); padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
+        .copy-btn:hover { background: var(--primary-glow); color: var(--bg-color); }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input { width: 100%; padding: 0.8rem; background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: var(--text-color); font-size: 1rem; }
+        
+        .btn-submit { display: block; width: 100%; padding: 1rem; border: 2px solid var(--primary-glow); border-radius: 50px; font-weight: 700; transition: all 0.4s ease; background: var(--primary-glow); color: var(--bg-color); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; font-size: 1.1rem; margin-top: 1.5rem; }
+        .btn-submit:disabled { background: #555; border-color: #555; color: #999; cursor: not-allowed; }
+        #errorMessage { text-align: center; margin-top: 1rem; color: #ff4d4d; font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .payment-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <header class="header">
+        <a href="index.html" class="logo"><i class="fa-solid fa-rocket"></i> RiseShop</a>
+    </header>
+
+    <main class="payment-container">
+        <h1 class="page-title">পেমেন্ট সম্পন্ন করুন</h1>
+        <div id="loadingMessage" style="text-align:center; font-size: 1.2rem;">অর্ডারের তথ্য লোড হচ্ছে...</div>
+        
+        <div class="payment-grid" id="paymentGrid" style="display: none;">
+            <div class="payment-card order-summary">
+                <h2 class="card-title"><i class="fa-solid fa-file-invoice-dollar"></i>অর্ডার সামারি</h2>
+                <div class="summary-item">
+                    <span class="label">প্রোডাক্ট:</span>
+                    <span class="value" id="summaryProduct"></span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">ক্যাটাগরি:</span>
+                    <span class="value" id="summaryCategory"></span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">পরিমাণ:</span>
+                    <span class="value" id="summaryQuantity"></span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">কুপন:</span>
+                    <span class="value" id="summaryCoupon"></span>
+                </div>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 1rem 0;">
+                <div class="summary-item total">
+                    <span class="label">সর্বমোট:</span>
+                    <span class="value" id="summaryTotal"></span>
+                </div>
+            </div>
+
+            <div class="payment-card payment-process">
+                <h2 class="card-title"><i class="fa-solid fa-credit-card"></i>পেমেন্ট মেথড</h2>
+                <form id="paymentForm">
+                    <div class="method-selection">
+                        <input type="radio" id="bkash" name="payment_method" value="bKash" checked>
+                        <label for="bkash"><img src="https://i.ibb.co/2nF0s7w/bkash.png" alt="bKash"></label>
+                        
+                        <input type="radio" id="nagad" name="payment_method" value="Nagad">
+                        <label for="nagad"><img src="https://i.ibb.co/q0Cbn0j/nagad.png" alt="Nagad"></label>
+                    </div>
+
+                    <!-- bKash Instructions -->
+                    <div id="bKashInstructions" class="payment-instructions">
+                        <p>নিচের বিকাশ পার্সোনাল নাম্বারে 'সেন্ড মানি' করুন।</p>
+                        <div class="account-number-box">
+                            <span class="account-number" id="bkashNumber">01700000000</span>
+                            <button type="button" class="copy-btn" data-target="bkashNumber">কপি</button>
+                        </div>
+                    </div>
+
+                    <!-- Nagad Instructions -->
+                    <div id="nagadInstructions" class="payment-instructions">
+                        <p>নিচের নগদ পার্সোনাল নাম্বারে 'সেন্ড মানি' করুন।</p>
+                        <div class="account-number-box">
+                            <span class="account-number" id="nagadNumber">01800000000</span>
+                            <button type="button" class="copy-btn" data-target="nagadNumber">কপি</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senderNumber">আপনার বিকাশ/নগদ নাম্বার</label>
+                        <input type="text" id="senderNumber" placeholder="যে নাম্বার থেকে টাকা পাঠিয়েছেন" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="trxId">ট্রানজেকশন আইডি (TrxID)</label>
+                        <input type="text" id="trxId" placeholder="পেমেন্টের ট্রানজেকশন আইডি দিন" required>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn" class="btn-submit">অর্ডার কনফার্ম করুন</button>
+                    <p id="errorMessage"></p>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Helper to get cookie ---
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            // --- Get Order and User Details from Cookies ---
+            const orderDetailsCookie = getCookie('orderDetails');
+            const userDetailsCookie = getCookie('userDetails');
+            
+            if (!orderDetailsCookie || !userDetailsCookie) {
+                document.getElementById('loadingMessage').textContent = 'দুঃখিত, কোনো অর্ডার পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।';
+                document.getElementById('loadingMessage').style.color = '#ff4d4d';
+                return;
+            }
+
+            // --- Parse Cookies ---
+            const orderDetails = JSON.parse(decodeURIComponent(orderDetailsCookie));
+            const userDetails = JSON.parse(decodeURIComponent(userDetailsCookie));
+            
+            // --- Populate Order Summary ---
+            document.getElementById('summaryProduct').textContent = orderDetails.productName;
+            document.getElementById('summaryCategory').textContent = orderDetails.category.split('৳')[0].trim();
+            document.getElementById('summaryQuantity').textContent = orderDetails.quantity;
+            document.getElementById('summaryCoupon').textContent = orderDetails.couponUsed || 'N/A';
+            document.getElementById('summaryTotal').textContent = orderDetails.totalPrice;
+
+            // --- Show the main content ---
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('paymentGrid').style.display = 'grid';
+
+            // --- Payment Method Toggling ---
+            const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
+            const bKashInstructions = document.getElementById('bKashInstructions');
+            const nagadInstructions = document.getElementById('nagadInstructions');
+
+            function toggleInstructions() {
+                const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                if (selectedMethod === 'bKash') {
+                    bKashInstructions.style.display = 'block';
+                    nagadInstructions.style.display = 'none';
+                } else {
+                    bKashInstructions.style.display = 'none';
+                    nagadInstructions.style.display = 'block';
+                }
+            }
+            paymentMethodRadios.forEach(radio => radio.addEventListener('change', toggleInstructions));
+            toggleInstructions(); // Initial call
+
+            // --- Copy Button Functionality ---
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.dataset.target;
+                    const targetElement = document.getElementById(targetId);
+                    navigator.clipboard.writeText(targetElement.textContent).then(() => {
+                        this.textContent = 'কপিড!';
+                        setTimeout(() => { this.textContent = 'কপি'; }, 2000);
+                    });
+                });
+            });
+
+            // --- Form Submission ---
+            const paymentForm = document.getElementById('paymentForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMessageEl = document.getElementById('errorMessage');
+
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'প্রসেসিং...';
+                errorMessageEl.textContent = '';
+
+                // --- Get Form Data ---
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                const senderNumber = document.getElementById('senderNumber').value;
+                const trxId = document.getElementById('trxId').value;
+
+                if (!senderNumber || !trxId) {
+                    errorMessageEl.textContent = 'দয়া করে সকল তথ্য পূরণ করুন।';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'অর্ডার কনফার্ম করুন';
+                    return;
+                }
+
+                // --- Prepare Telegram Message ---
+                const telegramMessage = `
+-=-=-=-= 🛒 নতুন অর্ডার পেমেন্ট -=-=-=-=
+                
+👤 *ব্যবহারকারীর তথ্য:*
+- *নাম:* ${userDetails.name}
+- *ইমেইল:* ${userDetails.email}
+
+📦 *অর্ডারের তথ্য:*
+- *প্রোডাক্ট:* ${orderDetails.productName}
+- *ক্যাটাগরি:* ${orderDetails.category.split('৳')[0].trim()}
+- *পরিমাণ:* ${orderDetails.quantity}
+- *কুপন:* ${orderDetails.couponUsed || 'N/A'}
+- *মোট মূল্য:* ${orderDetails.totalPrice}
+
+💳 *পেমেন্টের তথ্য:*
+- *মেথড:* ${paymentMethod}
+- *সেন্ডার নাম্বার:* ${senderNumber}
+- *TrxID:* ${trxId}
+
+⏰ *সময়:* ${new Date().toLocaleString('bn-BD')}
+                `;
+
+                // --- Send to Telegram ---
+                const BOT_TOKEN = '7387447736:AAE9xkSmY0Fsz1kR0o_AIo6GyK6h6W2HL_g'; // আপনার বটের টোকেন
+                const CHAT_ID = '6323961522'; // আপনার চ্যাট আইডি
+
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: telegramMessage,
+                        parse_mode: 'Markdown'
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        // --- Dummy Error Simulation ---
+                        // In a real app, you would verify payment here.
+                        setTimeout(() => {
+                            errorMessageEl.textContent = 'দুঃখিত, আপনার পেমেন্ট খুঁজে পাওয়া যায়নি। সঠিক তথ্য দিয়ে থাকলে সাপোর্টে যোগাযোগ করুন।';
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'অর্ডার কনফার্ম করুন';
+                        }, 2000);
+
+                    } else {
+                        throw new Error('Telegram API Error: ' + data.description);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    errorMessageEl.textContent = 'একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'অর্ডার কনফার্ম করুন';
+                });
+            });
+
+            // Particle JS
+            const canvas = document.getElementById('particle-canvas'); if (canvas) { const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particlesArray; class Particle { constructor(x, y, dX, dY, s, c) { this.x=x; this.y=y; this.directionX=dX; this.directionY=dY; this.size=s; this.color=c; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); } update() { if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX; if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY; this.x += this.directionX; this.y += this.directionY; this.draw(); } } function init() { particlesArray = []; let num = (canvas.height * canvas.width) / 9000; for (let i = 0; i < num; i++) { let s = (Math.random() * 2) + 1, x = (Math.random() * ((innerWidth - s * 2) - (s * 2)) + s * 2), y = (Math.random() * ((innerHeight - s * 2) - (s * 2)) + s * 2), dX = (Math.random() * .4) - .2, dY = (Math.random() * .4) - .2, c = 'rgba(0, 245, 195, 0.5)'; particlesArray.push(new Particle(x, y, dX, dY, s, c)); } } function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update(); } init(); animate(); window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; init(); }); }
+        });
+    </script>
+</body>
+</html>
