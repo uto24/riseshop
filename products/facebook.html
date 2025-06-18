@@ -215,7 +215,7 @@
                     console.error("Cookie parsing error:", e);
                 }
             } else {
-                 headerAuthBtn.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                 headerAuthBtn.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
                  headerAuthBtn.textContent = 'লগইন';
             }
 
