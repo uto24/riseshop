@@ -15,29 +15,42 @@
 
     <style>
         /* --- THEME: Cyber-Glow / HUD Interface --- */
-
         :root {
             --primary-glow: #00f5c3; /* Vibrant Cyan/Teal */
             --secondary-glow: #ff00e5; /* Vibrant Magenta */
             --accent-glow: #6e00ff; /* Deep Purple */
             --bg-color: #0a0a14;
-            --card-bg-color: rgba(16, 20, 42, 0.5);
+            --card-bg-color: rgba(16, 20, 42, 0.6);
+            --card-hover-bg: rgba(25, 30, 55, 0.8);
             --text-color: #e0e0e0;
             --text-secondary-color: #a0a0b0;
             --border-glow-gradient: linear-gradient(90deg, var(--primary-glow), var(--secondary-glow));
         }
 
-        /* --- Base, Particle BG, Header, Hero (Unchanged) --- */
+        /* --- Base & General --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.8; overflow-x: hidden; }
         #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+        .section { padding: 6rem 5%; text-align: center; position: relative; }
+        .section-title { font-size: 2.8rem; margin-bottom: 1rem; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--primary-glow); }
+        .section-subtitle { font-size: 1.15rem; color: var(--text-secondary-color); max-width: 700px; margin: 0 auto 5rem auto; }
+        .btn { display: inline-block; padding: 0.9rem 2.5rem; border: 2px solid var(--primary-glow); border-radius: 50px; text-decoration: none; font-weight: 700; transition: all 0.4s ease; position: relative; background: transparent; color: var(--primary-glow); text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px rgba(0, 245, 195, 0.5); }
+        .btn:hover { background: var(--primary-glow); color: var(--bg-color); box-shadow: 0 0 25px rgba(0, 245, 195, 0.5); text-shadow: none; transform: translateY(-3px); }
+        
+        /* --- Header & Navigation --- */
         .header { position: fixed; top: 0; left: 0; width: 100%; padding: 1.2rem 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: all 0.3s ease-in-out; background: transparent; }
         .header.scrolled { background: rgba(10, 10, 20, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 245, 195, 0.2); }
         .logo { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700; text-decoration: none; color: #fff; text-shadow: 0 0 5px var(--primary-glow); }
         .logo i { margin-right: 8px; }
         .nav-links a { color: var(--text-color); text-decoration: none; margin-left: 2.5rem; font-weight: 500; transition: all 0.3s ease; text-shadow: 0 0 3px rgba(255, 255, 255, 0.2); }
         .nav-links a:hover, .nav-links a.active { color: var(--primary-glow); text-shadow: 0 0 8px var(--primary-glow); }
+        
+        /* --- Mobile Navigation Toggle --- */
+        .menu-toggle { display: none; font-size: 1.8rem; color: #fff; cursor: pointer; }
+        #authLink { padding: 0.5rem 1.5rem; }
+
+        /* --- Hero Section --- */
         .hero { position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center; min-height: 100vh; padding: 8rem 5% 4rem; color: var(--text-color); overflow: hidden; }
         .hero h1 { font-size: 3.8rem; font-weight: 700; margin-bottom: 1rem; color: #fff; text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--primary-glow), 0 0 30px var(--primary-glow); }
         .dynamic-text-wrapper { height: 60px; }
@@ -45,324 +58,421 @@
         .dynamic-text::after { content: '_'; color: var(--primary-glow); animation: blink 0.8s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
         .hero p { font-size: 1.25rem; max-width: 650px; margin-bottom: 2.5rem; color: var(--text-secondary-color); }
-        .btn { display: inline-block; padding: 0.9rem 2.5rem; border: 2px solid var(--primary-glow); border-radius: 50px; text-decoration: none; font-weight: 700; transition: all 0.4s ease; position: relative; background: transparent; color: var(--primary-glow); text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px rgba(0, 245, 195, 0.5); }
-        .btn:hover { background: var(--primary-glow); color: var(--bg-color); box-shadow: 0 0 25px rgba(0, 245, 195, 0.5); text-shadow: none; transform: translateY(-3px); }
+
+        /* --- Animated Card Hover --- */
+        .product-card, .feature-item, .affiliate-step-card {
+            position: relative;
+            padding: 2.5rem;
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(8px);
+            border-radius: 15px;
+            overflow: hidden;
+            z-index: 1;
+            transition: transform 0.4s ease;
+        }
+        .product-card::before, .feature-item::before, .affiliate-step-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(transparent, var(--primary-glow), var(--secondary-glow), transparent 30%);
+            z-index: -2;
+            animation: spin 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .product-card::after, .feature-item::after, .affiliate-step-card::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px;
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
+            background: var(--card-bg-color);
+            border-radius: 13px;
+            z-index: -1;
+            transition: background-color 0.4s ease;
+        }
+        .product-card:hover, .feature-item:hover, .affiliate-step-card:hover {
+            transform: translateY(-10px);
+        }
+        .product-card:hover::before, .feature-item:hover::before, .affiliate-step-card:hover::before {
+            opacity: 1;
+        }
+        .product-card:hover::after, .feature-item:hover::after, .affiliate-step-card:hover::after {
+            background: var(--card-hover-bg);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Card Content Styles */
+        .icon-container { width: 80px; height: 80px; margin: 0 auto 1.5rem auto; border: 2px solid var(--primary-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(0, 245, 195, 0.3), inset 0 0 15px rgba(0, 245, 195, 0.2); transition: all 0.4s ease; }
+        .product-card:hover .icon-container, .feature-item:hover .icon-container { transform: rotate(360deg) scale(1.1); }
+        .icon-container i { font-size: 2.5rem; color: var(--primary-glow); }
+        .product-card h3, .feature-item h3 { font-size: 1.7rem; margin-bottom: 0.75rem; font-weight: 700; color: #fff; }
+        .product-card p, .feature-item p { color: var(--text-secondary-color); margin-bottom: 1.5rem; font-size: 1rem; }
+        .price { font-size: 2rem; font-weight: 700; margin-bottom: 2rem; font-family: 'Poppins', sans-serif; color: var(--primary-glow); text-shadow: 0 0 8px var(--primary-glow); }
+        .price span { font-size: 1rem; font-weight: 500; color: var(--text-secondary-color); font-family: 'Hind Siliguri', sans-serif; text-shadow: none; }
         
-        /* --- Other sections (Stats, About, Notice, etc.) are unchanged --- */
+        /* Other Sections (Stats, Notice, etc.) */
         .stats-section { padding: 2rem 5%; background: rgba(10, 10, 20, 0.5); backdrop-filter: blur(5px); border-top: 1px solid rgba(0, 245, 195, 0.2); border-bottom: 1px solid rgba(0, 245, 195, 0.2); }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; }
         .stat-item i { font-size: 2rem; color: var(--primary-glow); margin-bottom: 0.5rem; }
         .stat-item h3 { font-family: 'Poppins', sans-serif; font-size: 2.5rem; color: #fff; }
         .stat-item p { font-size: 1rem; color: var(--text-secondary-color); }
-        .section { padding: 6rem 5%; text-align: center; position: relative; }
-        .section-title { font-size: 2.8rem; margin-bottom: 1rem; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--primary-glow); }
-        .section-subtitle { font-size: 1.15rem; color: var(--text-secondary-color); max-width: 700px; margin: 0 auto 5rem auto; }
-        .about-content { max-width: 800px; margin: 0 auto; }
         .notice-box { display: flex; align-items: center; justify-content: center; gap: 1.5rem; padding: 1.5rem 2rem; border: 1px solid var(--primary-glow); border-radius: 10px; background: rgba(0, 245, 195, 0.05); max-width: 900px; margin: 0 auto 5rem auto; }
         .notice-icon { font-size: 2.5rem; color: var(--primary-glow); animation: pulse-glow 2s infinite; }
         @keyframes pulse-glow { 0%, 100% { transform: scale(1); text-shadow: 0 0 5px var(--primary-glow); } 50% { transform: scale(1.1); text-shadow: 0 0 15px var(--primary-glow); } }
         .notice-text h3 { font-size: 1.5rem; color: #fff; text-align: left; }
         .notice-text p { color: var(--text-secondary-color); text-align: left; }
         .product-grid, .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem; }
-        .product-card, .feature-item { position: relative; padding: 2.5rem; background-color: var(--card-bg-color); backdrop-filter: blur(8px); border-radius: 15px; transition: transform 0.4s ease, background-color 0.4s ease; }
-        .product-card:hover, .feature-item:hover { transform: translateY(-10px); background-color: rgba(25, 30, 55, 0.7); }
-        .corner-brackets::before, .corner-brackets::after { content: ''; position: absolute; width: 30px; height: 30px; border-style: solid; border-color: var(--primary-glow); transition: transform 0.4s ease; }
-        .corner-brackets::before { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
-        .corner-brackets::after { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
-        .product-card:hover .corner-brackets, .feature-item:hover .corner-brackets { transform: scale(1.05); }
-        .icon-container { width: 80px; height: 80px; margin: 0 auto 1.5rem auto; border: 2px solid var(--primary-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(0, 245, 195, 0.3), inset 0 0 15px rgba(0, 245, 195, 0.2); transition: all 0.4s ease; }
-        .product-card:hover .icon-container, .feature-item:hover .icon-container { transform: rotate(360deg); }
-        .icon-container i { font-size: 2.5rem; color: var(--primary-glow); }
-        .product-card h3, .feature-item h3 { font-size: 1.7rem; margin-bottom: 0.75rem; font-weight: 700; color: #fff; }
-        .product-card p, .feature-item p { color: var(--text-secondary-color); margin-bottom: 1.5rem; font-size: 1rem; }
-        .price { font-size: 2rem; font-weight: 700; margin-bottom: 2rem; font-family: 'Poppins', sans-serif; color: var(--primary-glow); text-shadow: 0 0 8px var(--primary-glow); }
-        .price span { font-size: 1rem; font-weight: 500; color: var(--text-secondary-color); font-family: 'Hind Siliguri', sans-serif; text-shadow: none; }
-        .special-offer-section { background: radial-gradient(circle, rgba(110, 0, 255, 0.2), transparent 70%); border-radius: 20px; padding: 4rem 2rem; }
+        #special-offer .special-offer-section { background: radial-gradient(circle, rgba(110, 0, 255, 0.2), transparent 70%); border-radius: 20px; padding: 4rem 2rem; }
         #countdown { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
         .countdown-item { text-align: center; background: rgba(10, 10, 20, 0.7); padding: 1rem; border-radius: 10px; min-width: 90px; border: 1px solid rgba(110, 0, 255, 0.5); }
         .countdown-item .time { font-family: 'Poppins', sans-serif; font-size: 2.5rem; color: #fff; }
         .countdown-item .label { color: var(--text-secondary-color); }
+        
+        /* Review Ticker */
+        #reviews { padding-bottom: 0; }
+        .review-ticker-wrap { overflow: hidden; padding: 2rem 0; position: relative; width: 100%; -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+        .review-ticker { display: flex; gap: 1.5rem; width: fit-content; animation: scroll-left 80s linear infinite; }
+        .review-ticker-wrap:hover .review-ticker { animation-play-state: paused; }
+        @keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .review-card { flex-shrink: 0; width: 320px; padding: 1.5rem; background: var(--card-bg-color); border-radius: 10px; border: 1px solid rgba(0, 245, 195, 0.15); }
+        .review-card .stars { color: #ffc107; margin-bottom: 0.75rem; }
+        .review-card p { color: var(--text-secondary-color); font-style: italic; margin-bottom: 1rem; text-align: left; }
+        .review-card h4 { color: #fff; font-weight: 600; text-align: left; }
+
+        /* Affiliate Section */
+        .affiliate-section { background: radial-gradient(circle, rgba(0, 245, 195, 0.05), transparent 70%); }
+        .affiliate-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 4rem; }
+        .step-number { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; background: var(--bg-color); border: 2px solid var(--primary-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-size: 1.5rem; color: var(--primary-glow); box-shadow: 0 0 15px var(--primary-glow); z-index: 2; }
+        .affiliate-step-card h3 { margin-top: 2rem; font-size: 1.5rem; color: #fff; }
+        .affiliate-perks { text-align: center; max-width: 600px; margin: 0 auto 3rem auto; background: var(--card-bg-color); padding: 2rem; border-radius: 15px; border: 1px solid rgba(0, 245, 195, 0.2); }
+        .affiliate-perks h3 { font-size: 1.8rem; color: var(--primary-glow); margin-bottom: 1rem; }
+        .affiliate-perks p { color: var(--text-secondary-color); line-height: 1.7; }
+        .affiliate-perks .highlight { font-family: 'Poppins', sans-serif; color: #fff; font-weight: 700; }
+        
+        /* FAQ Section */
+        .faq-container { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+        .faq-item details { background: var(--card-bg-color); border: 1px solid rgba(0, 245, 195, 0.2); border-radius: 10px; padding: 1.2rem 1.8rem; transition: background-color 0.3s ease; }
+        .faq-item details:hover { background-color: var(--card-hover-bg); }
+        .faq-item summary { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: 600; color: #fff; cursor: pointer; list-style: none; }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary i { color: var(--primary-glow); transition: transform 0.3s ease; }
+        .faq-item details[open] summary i { transform: rotate(180deg); }
+        .faq-item details .faq-answer { color: var(--text-secondary-color); text-align: left; padding-top: 1rem; margin-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* Community & Footer */
         .community-cta { background: var(--card-bg-color); border-top: 1px solid rgba(0, 245, 195, 0.2); }
         .community-links { display: flex; justify-content: center; gap: 1.5rem; margin-top: 2rem; }
         .community-links .btn i { margin-right: 0.75rem; }
-
-        /* --- NEW: Affiliate Section --- */
-        .affiliate-section {
-            background: radial-gradient(circle, rgba(0, 245, 195, 0.05), transparent 70%);
-            padding-bottom: 0;
-        }
-        .affiliate-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-        .affiliate-step-card {
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-            background-color: var(--card-bg-color);
-            border-radius: 15px;
-        }
-        .step-number {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 50px;
-            background: var(--bg-color);
-            border: 2px solid var(--primary-glow);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.5rem;
-            color: var(--primary-glow);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-        .affiliate-step-card h3 {
-            margin-top: 2rem;
-            font-size: 1.5rem;
-            color: #fff;
-        }
-        .affiliate-perks {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto 3rem auto;
-            background: var(--card-bg-color);
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid rgba(0, 245, 195, 0.2);
-        }
-        .affiliate-perks h3 {
-            font-size: 1.8rem;
-            color: var(--primary-glow);
-            margin-bottom: 1rem;
-        }
-        .affiliate-perks p {
-            color: var(--text-secondary-color);
-            line-height: 1.7;
-        }
-        .affiliate-perks .highlight {
-            font-family: 'Poppins', sans-serif;
-            color: #fff;
-            font-weight: 700;
-        }
-        
-        /* --- NEW: Updated Footer --- */
-        .footer {
-            padding: 6rem 5% 2rem; text-align: left;
-            background: #06060c; position: relative;
-        }
+        .footer { padding: 6rem 5% 2rem; text-align: left; background: #06060c; position: relative; }
         .footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--border-glow-gradient); box-shadow: 0 0 15px var(--primary-glow); }
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 3rem;
-            margin-bottom: 4rem;
-        }
-        .footer-col h4 {
-            font-size: 1.2rem;
-            color: #fff;
-            margin-bottom: 1.5rem;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-        .footer-col h4::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background: var(--primary-glow);
-        }
-        .footer-col p {
-            color: var(--text-secondary-color);
-            margin-bottom: 1.5rem;
-        }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 3rem; margin-bottom: 4rem; }
+        .footer-col h4 { font-size: 1.2rem; color: #fff; margin-bottom: 1.5rem; position: relative; padding-bottom: 0.5rem; }
+        .footer-col h4::after { content: ''; position: absolute; bottom: 0; left: 0; width: 40px; height: 2px; background: var(--primary-glow); }
+        .footer-col p { color: var(--text-secondary-color); margin-bottom: 1.5rem; }
         .footer-col ul { list-style: none; }
         .footer-col ul li { margin-bottom: 0.75rem; }
-        .footer-col ul li a {
-            color: var(--text-secondary-color);
-            text-decoration: none;
-            transition: color 0.3s ease, padding-left 0.3s ease;
-        }
-        .footer-col ul li a:hover {
-            color: var(--primary-glow);
-            padding-left: 5px;
-        }
+        .footer-col ul li a { color: var(--text-secondary-color); text-decoration: none; transition: color 0.3s ease, padding-left 0.3s ease; }
+        .footer-col ul li a:hover { color: var(--primary-glow); padding-left: 5px; }
         .social-links { display: flex; gap: 1rem; }
-        .social-links a {
-            color: var(--text-secondary-color);
-            font-size: 1.2rem;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--text-secondary-color);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-        .social-links a:hover {
-            color: var(--primary-glow);
-            border-color: var(--primary-glow);
-            box-shadow: 0 0 10px var(--primary-glow);
-            transform: translateY(-3px);
-        }
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary-color);
-        }
+        .social-links a { color: var(--text-secondary-color); font-size: 1.2rem; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--text-secondary-color); border-radius: 50%; transition: all 0.3s ease; }
+        .social-links a:hover { color: var(--primary-glow); border-color: var(--primary-glow); box-shadow: 0 0 10px var(--primary-glow); transform: translateY(-3px); }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-secondary-color); }
 
+        /* Animation & Responsive */
         .animate-on-scroll { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
         .animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 992px) {
+            .menu-toggle { display: block; z-index: 1001; }
+            .nav-links {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(10, 10, 20, 0.98);
+                backdrop-filter: blur(10px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transform: translateX(100%);
+                opacity: 0;
+                transition: transform 0.4s ease, opacity 0.4s ease;
+                z-index: 1000;
+            }
+            .nav-links.active {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            .nav-links a {
+                margin: 1.5rem 0;
+                font-size: 1.5rem;
+            }
+            .header { align-items: center; }
+            .hero h1 { font-size: 3rem; }
+            .hero p { font-size: 1.1rem; }
+        }
+
     </style>
 </head>
 <body>
     <canvas id="particle-canvas"></canvas>
 
     <header class="header">
-        <a href="#" class="logo"><i class="fa-solid fa-rocket"></i> RiseShop</a>
-        <nav class="nav-links">
-            <a href="#products" class="active">প্রোডাক্টস</a>
+        <a href="/" class="logo"><i class="fa-solid fa-rocket"></i> RiseShop</a>
+        <nav class="nav-links" id="nav-menu">
+            <a href="#products">প্রোডাক্টস</a>
+            <a href="#reviews">রিভিউ</a>
             <a href="#affiliate">অ্যাফিলিয়েট</a>
-            <a href="#">যোগাযোগ</a>
+            <a href="#faq">যোগাযোগ</a>
             <a href="#community">কমিউনিটি</a>
+            <!-- লগইন/প্রোফাইল বাটন -->
+            <a href="login.html" id="authLink" class="btn">লগইন / সাইন আপ</a>
         </nav>
+        <div class="menu-toggle" id="menu-toggle">
+            <i class="fa-solid fa-bars"></i>
+        </div>
     </header>
 
     <main>
-        <!-- Hero, Stats, About, Notice, Products, Special Offer, Why Us Sections are here (omitted for brevity) -->
-        <!-- All previous sections from your last code are assumed to be here -->
-        <section class="hero" id="home"> <h1 class="animate-on-scroll">ভবিষ্যতের ডিজিটাল <div class="dynamic-text-wrapper"><span class="dynamic-text"></span></div></h1> <p class="animate-on-scroll" style="transition-delay: 0.2s;">নিরাপদ, দ্রুত এবং নির্ভরযোগ্য ডিজিটাল প্রোডাক্টের জন্য আপনার চূড়ান্ত গন্তব্য।</p> <a href="#products" class="btn animate-on-scroll" style="transition-delay: 0.4s;">এক্সপ্লোর করুন</a> </section>
-        <section class="stats-section"> <div class="stats-grid"> <div class="stat-item animate-on-scroll"><i class="fa-solid fa-truck-fast"></i><h3>900+</h3><p>আইডি ডেলিভারি</p></div> <div class="stat-item animate-on-scroll" style="transition-delay: 0.1s;"><i class="fa-solid fa-users"></i><h3>700+</h3><p>সন্তুষ্ট ব্যবহারকারী</p></div> <div class="stat-item animate-on-scroll" style="transition-delay: 0.2s;"><i class="fa-solid fa-sack-dollar"></i><h3>12,000৳+</h3><p>মোট বিক্রয়</p></div> <div class="stat-item animate-on-scroll" style="transition-delay: 0.3s;"><i class="fa-solid fa-headset"></i><h3>24/7</h3><p>লাইভ সাপোর্ট</p></div> </div> </section>
-        <section class="section" id="about"> <div class="about-content animate-on-scroll"> <h2 class="section-title">আমাদের সম্পর্কে</h2> <p class="section-subtitle">রাইজশপ হলো একটি আধুনিক এবং নির্ভরযোগ্য ডিজিটাল মার্কেটপ্লেস। আমরা মার্কেটার এবং সাধারণ ব্যবহারকারীদের জন্য উচ্চ-মানের ডিজিটাল প্রোডাক্ট সরবরাহ করি। আমাদের লক্ষ্য হলো দ্রুত, নিরাপদ এবং সাশ্রয়ী মূল্যে সেরা সেবা প্রদান করা।</p> </div> </section>
-        <section class="section" id="notice-section" style="padding-top:0;"> <div class="notice-box animate-on-scroll"> <div class="notice-icon"><i class="fa-solid fa-bell"></i></div> <div class="notice-text"> <h3>গুরুত্বপূর্ণ নোটিশ</h3> <p>যেকোনো আইডি কেনার আগে নিয়মাবলী ভালোভাবে পড়ুন। আমাদের একমাত্র পেমেন্ট নাম্বার সাইটে দেওয়া আছে।</p> </div> </div> </section>
-        <section class="section" id="products"> <h2 class="section-title animate-on-scroll">আমাদের হাই-টেক প্রোডাক্টস</h2> <div class="product-grid"> <div class="product-card animate-on-scroll"><div class="corner-brackets"></div><div class="icon-container"><i class="fa-brands fa-facebook-f"></i></div><h3>ফেসবুক আইডি</h3><p>সম্পূর্ণ প্রস্তুত, ফোন-ভেরিফাইড ও শক্তিশালী ফেসবুক প্রোফাইল।</p><div class="price">৳2500 <span>/ একাউন্ট</span></div><a href="#" class="btn btn-buy">এখনই কিনুন</a></div> <div class="product-card animate-on-scroll" style="transition-delay: 0.2s;"><div class="corner-brackets"></div><div class="icon-container"><i class="fa-brands fa-google"></i></div><h3>জিমেইল আইডি</h3><p>নিরাপদ ও নির্ভরযোগ্য জিমেইল অ্যাকাউন্ট। ফোন ভেরিফাইড (PVA) অপশনসহ।</p><div class="price">৳1500 <span>/ একাউন্ট</span></div><a href="#" class="btn btn-buy">এখনই কিনুন</a></div> <div class="product-card animate-on-scroll" style="transition-delay: 0.4s;"><div class="corner-brackets"></div><div class="icon-container"><i class="fa-brands fa-telegram"></i></div><h3>টেলিগ্রাম প্রিমিয়াম</h3><p>বিজ্ঞাপনমুক্ত অভিজ্ঞতা, দ্রুত ডাউনলোড এবং বড় ফাইল আপলোডের সুবিধা।</p><div class="price">৳2000 <span>/ ৩ মাস</span></div><a href="#" class="btn btn-buy">এখনই কিনুন</a></div> </div> </section>
-        <section class="section" id="special-offer"> <div class="special-offer-section animate-on-scroll"> <h2 class="section-title">বিশেষ অফার!</h2> <p class="section-subtitle">সীমিত সময়ের জন্য! যেকোনো ৩টি প্রোডাক্ট একসাথে কিনলে ২০% ছাড়! অফারটি শেষ হচ্ছে...</p> <div id="countdown"></div> <a href="#products" class="btn">অফারটি গ্রহণ করুন</a> </div> </section>
-        <section class="section" id="why-us"> <h2 class="section-title animate-on-scroll">কেন আমাদের বেছে নিবেন?</h2> <div class="features-grid"> <div class="feature-item animate-on-scroll"><div class="corner-brackets"></div><div class="icon-container"><i class="fa-solid fa-bolt-lightning"></i></div><h3>দ্রুত ডেলিভারি</h3><p>পেমেন্টের পর সর্বোচ্চ ১০ মিনিটের মধ্যে আপনার প্রোডাক্ট বুঝে নিন।</p></div> <div class="feature-item animate-on-scroll" style="transition-delay: 0.15s;"><div class="corner-brackets"></div><div class="icon-container"><i class="fa-solid fa-shield-halved"></i></div><h3>নিরাপদ ও সুরক্ষিত</h3><p>আমরা আপনার তথ্যের সর্বোচ্চ নিরাপত্তা নিশ্চিত করি। সকল লেনদেন এনক্রিপ্টেড।</p></div> <div class="feature-item animate-on-scroll" style="transition-delay: 0.3s;"><div class="corner-brackets"></div><div class="icon-container"><i class="fa-solid fa-gem"></i></div><h3>সেরা মানের প্রোডাক্ট</h3><p>প্রতিটি প্রোডাক্ট বিক্রয়ের পূর্বে আমাদের টিম দ্বারা тщательно পরীক্ষা করা হয়।</p></div> <div class="feature-item animate-on-scroll" style="transition-delay: 0.45s;"><div class="corner-brackets"></div><div class="icon-container"><i class="fa-solid fa-headset"></i></div><h3>২৪/৭ সাপোর্ট</h3><p>যেকোনো প্রয়োজনে আমাদের সাপোর্ট টিম সবসময় আপনার পাশে আছে।</p></div> </div> </section>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <h1 class="animate-on-scroll">ভবিষ্যতের ডিজিটাল <div class="dynamic-text-wrapper"><span class="dynamic-text"></span></div></h1>
+            <br>
+            <p class="animate-on-scroll" style="transition-delay: 0.2s;">নিরাপদ, দ্রুত এবং নির্ভরযোগ্য ডিজিটাল প্রোডাক্টের জন্য আপনার চূড়ান্ত গন্তব্য।</p>
+            <a href="#products" class="btn animate-on-scroll" style="transition-delay: 0.4s;">এক্সপ্লোর করুন</a>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item animate-on-scroll"><i class="fa-solid fa-truck-fast"></i><h3>2976+</h3><p>সার্ভিস ডেলিভারি</p></div>
+                <div class="stat-item animate-on-scroll" style="transition-delay: 0.1s;"><i class="fa-solid fa-users"></i><h3>1052+</h3><p>সন্তুষ্ট ব্যবহারকারী</p></div>
+                <div class="stat-item animate-on-scroll" style="transition-delay: 0.2s;"><i class="fa-solid fa-sack-dollar"></i><h3>80,280৳+</h3><p>মোট বিক্রয়</p></div>
+                <div class="stat-item animate-on-scroll" style="transition-delay: 0.3s;"><i class="fa-solid fa-headset"></i><h3>24/7</h3><p>লাইভ সাপোর্ট</p></div>
+            </div>
+        </section>
+
+         <br><br><br><br><br>
+        <!-- Notice Section -->
+        <section class="section" id="notice-section" style="padding-top:0;">
+            <div class="notice-box animate-on-scroll">
+                <div class="notice-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                <div class="notice-text">
+                    <h3>ধামাকা অফার!!!</h3>
+                    <p>22 শে জুন পর্যন্ত, ১০০ টাকার উপর অর্ডার করলেই, ১ টি আইডি বোনাস ডেলিভারি!</p>
+                </div>
+            </div>
+        </section>
         
+        <!-- Products Section -->
+        <section class="section" id="products">
+            <h2 class="section-title animate-on-scroll">আমাদের হাই-টেক প্রোডাক্টস</h2>
+            <div class="product-grid">
+                <div class="product-card animate-on-scroll">
+                    <div class="icon-container"><i class="fa-brands fa-facebook-f"></i></div>
+                    <h3>ফেসবুক আইডি</h3><p>সম্পূর্ণ প্রস্তুত, ফোন-ভেরিফাইড ও শক্তিশালী ফেসবুক প্রোফাইল।</p>
+                    <div class="price">৳30 <span>/ একাউন্ট</span></div>
+                    <a href="#" class="btn btn-buy">এখনই কিনুন</a>
+                </div>
+                <div class="product-card animate-on-scroll" style="transition-delay: 0.2s;">
+                    <div class="icon-container"><i class="fa-brands fa-google"></i></div>
+                    <h3>জিমেইল আইডি</h3><p>নিরাপদ ও নির্ভরযোগ্য জিমেইল অ্যাকাউন্ট। ফোন ভেরিফাইড (PVA) অপশনসহ।</p>
+                    <div class="price">৳35 <span>/ একাউন্ট</span></div>
+                    <a href="#" class="btn btn-buy">এখনই কিনুন</a>
+                </div>
+                <div class="product-card animate-on-scroll" style="transition-delay: 0.4s;">
+                    <div class="icon-container"><i class="fa-brands fa-telegram"></i></div>
+                    <h3>টেলিগ্রাম প্রিমিয়াম</h3><p>বিজ্ঞাপনমুক্ত অভিজ্ঞতা, দ্রুত ডাউনলোড এবং বড় ফাইল আপলোডের সুবিধা।</p>
+                    <div class="price">৳80 <span>/ ১ মাস</span></div>
+                    <a href="#" class="btn btn-buy">এখনই কিনুন</a>
+                </div>
+            </div>
+        </section>
+      
+         <!-- About Section -->
+        <section class="section" id="about">
+            <div class="about-content animate-on-scroll">
+                <h2 class="section-title">আমাদের সম্পর্কে</h2>
+                <p class="section-subtitle">রাইজশপ হলো একটি আধুনিক এবং নির্ভরযোগ্য ডিজিটাল মার্কেটপ্লেস। আমরা মার্কেটার এবং সাধারণ ব্যবহারকারীদের জন্য উচ্চ-মানের ডিজিটাল প্রোডাক্ট সরবরাহ করি। আমাদের লক্ষ্য হলো দ্রুত, নিরাপদ এবং সাশ্রয়ী মূল্যে সেরা সেবা প্রদান করা।</p>
+            </div>
+        </section>
+
+        <!-- Special Offer Section -->
+        <section class="section" id="special-offer">
+            <div class="special-offer-section animate-on-scroll">
+                <h2 class="section-title">বিশেষ অফার!</h2>
+                <p class="section-subtitle">সীমিত সময়ের জন্য! যেকোনো ৩টি প্রোডাক্ট একসাথে কিনলে ২০% ছাড়! অফারটি শেষ হচ্ছে...</p>
+                <div id="countdown"></div>
+                <a href="#products" class="btn">অফারটি গ্রহণ করুন</a>
+            </div>
+        </section>
+
+        <!-- Why Us Section -->
+        <section class="section" id="why-us">
+            <h2 class="section-title animate-on-scroll">কেন আমাদের বেছে নিবেন?</h2>
+            <div class="features-grid">
+                <div class="feature-item animate-on-scroll"><div class="icon-container"><i class="fa-solid fa-bolt-lightning"></i></div><h3>দ্রুত ডেলিভারি</h3><p>পেমেন্টের পর সর্বোচ্চ ১০ মিনিটের মধ্যে আপনার প্রোডাক্ট বুঝে নিন।</p></div>
+                <div class="feature-item animate-on-scroll" style="transition-delay: 0.15s;"><div class="icon-container"><i class="fa-solid fa-shield-halved"></i></div><h3>নিরাপদ ও সুরক্ষিত</h3><p>আমরা আপনার তথ্যের সর্বোচ্চ নিরাপত্তা নিশ্চিত করি। সকল লেনদেন এনক্রিপ্টেড।</p></div>
+                <div class="feature-item animate-on-scroll" style="transition-delay: 0.3s;"><div class="icon-container"><i class="fa-solid fa-gem"></i></div><h3>সেরা মানের প্রোডাক্ট</h3><p>প্রতিটি প্রোডাক্ট বিক্রয়ের পূর্বে আমাদের টিম দ্বারা тщательно পরীক্ষা করা হয়।</p></div>
+                <div class="feature-item animate-on-scroll" style="transition-delay: 0.45s;"><div class="icon-container"><i class="fa-solid fa-headset"></i></div><h3>২৪/৭ সাপোর্ট</h3><p>যেকোনো প্রয়োজনে আমাদের সাপোর্ট টিম সবসময় আপনার পাশে আছে।</p></div>
+            </div>
+        </section>
+        
+        <!-- Reviews Section -->
+        <section class="section" id="reviews">
+            <h2 class="section-title animate-on-scroll">গ্রাহকদের মতামত</h2>
+            <p class="section-subtitle animate-on-scroll">আমাদের সেবায় সন্তুষ্ট গ্রাহকরা কী বলছেন দেখুন।</p>
+            <div class="review-ticker-wrap animate-on-scroll">
+                <div class="review-ticker" id="review-ticker-content"></div>
+            </div>
+        </section>
+
+        <!-- Affiliate Section -->
         <section class="section affiliate-section" id="affiliate">
             <h2 class="section-title animate-on-scroll">আমাদের অ্যাফিলিয়েট প্রোগ্রাম</h2>
             <p class="section-subtitle animate-on-scroll">আমাদের সাথে যোগ দিন এবং প্রতিটি সফল বিক্রয়ে আকর্ষণীয় কমিশন আয় করুন।</p>
             <div class="affiliate-grid">
-                <div class="affiliate-step-card animate-on-scroll">
-                    <div class="step-number">1</div>
-                    <h3>সাইন আপ করুন</h3>
-                    <p>আমাদের অ্যাফিলিয়েট প্রোগ্রামে বিনামূল্যে রেজিস্টার করুন এবং আপনার নিজস্ব ড্যাশবোর্ড পান।</p>
-                </div>
-                <div class="affiliate-step-card animate-on-scroll" style="transition-delay: 0.2s;">
-                    <div class="step-number">2</div>
-                    <h3>লিংক ও কুপন শেয়ার করুন</h3>
-                    <p>আপনার ইউনিক অ্যাফিলিয়েট লিংক এবং বিশেষ কুপন কোড আপনার বন্ধুদের বা ফলোয়ারদের সাথে শেয়ার করুন।</p>
-                </div>
-                <div class="affiliate-step-card animate-on-scroll" style="transition-delay: 0.4s;">
-                    <div class="step-number">3</div>
-                    <h3>কমিশন আয় করুন</h3>
-                    <p>আপনার লিংক বা কুপন ব্যবহার করে প্রতিটি বিক্রয়ের উপর নিশ্চিত কমিশন সরাসরি আপনার একাউন্টে নিন।</p>
-                </div>
+                <div class="affiliate-step-card animate-on-scroll"> <div class="step-number">1</div> <h3>সাইন আপ করুন</h3> <p>আমাদের অ্যাফিলিয়েট প্রোগ্রামে বিনামূল্যে রেজিস্টার করুন এবং আপনার নিজস্ব ড্যাশবোর্ড পান।</p> </div>
+                <div class="affiliate-step-card animate-on-scroll" style="transition-delay: 0.2s;"> <div class="step-number">2</div> <h3>লিংক ও কুপন শেয়ার করুন</h3> <p>আপনার ইউনিক অ্যাফিলিয়েট লিংক এবং বিশেষ কুপন কোড আপনার বন্ধুদের বা ফলোয়ারদের সাথে শেয়ার করুন।</p> </div>
+                <div class="affiliate-step-card animate-on-scroll" style="transition-delay: 0.4s;"> <div class="step-number">3</div> <h3>কমিশন আয় করুন</h3> <p>আপনার লিংক বা কুপন ব্যবহার করে প্রতিটি বিক্রয়ের উপর নিশ্চিত কমিশন সরাসরি আপনার একাউন্টে নিন।</p> </div>
             </div>
             <div class="affiliate-perks animate-on-scroll">
                 <h3>আপনার জন্য বিশেষ সুবিধা</h3>
                 <p>প্রতিটি সফল বিক্রয়ের উপর ফ্ল্যাট <span class="highlight">১৫% কমিশন</span>। আপনার রেফার করা গ্রাহকরা আপনার কুপন ব্যবহার করে কেনাকাটায় <span class="highlight">১০% ছাড়</span> পাবেন। কোনো ইনভেস্টমেন্ট ছাড়াই আয়ের দারুণ সুযোগ!</p>
             </div>
-             <div style="text-align: center;" class="animate-on-scroll">
-                 <a href="#" class="btn">অ্যাফিলিয়েট হতে যোগ দিন</a>
-             </div>
+            <div style="text-align: center;" class="animate-on-scroll">
+                <a href="#" class="btn">অ্যাফিলিয়েট হতে যোগ দিন</a>
+            </div>
         </section>
 
-        <section class="section community-cta" id="community"> <div class="animate-on-scroll"> <h2 class="section-title">আমাদের কমিউনিটিতে যোগ দিন</h2> <p class="section-subtitle">সর্বশেষ আপডেট, অফার এবং আলোচনার জন্য আমাদের সাথে যুক্ত হন।</p> <div class="community-links"> <a href="#" class="btn"><i class="fa-brands fa-telegram"></i> টেলিগ্রাম</a> <a href="#" class="btn"><i class="fa-brands fa-discord"></i> ডিসকর্ড</a> </div> </div> </section>
+        <!-- FAQ Section -->
+        <section class="section" id="faq">
+            <h2 class="section-title animate-on-scroll">সাধারণ জিজ্ঞাসা (FAQ)</h2>
+            <p class="section-subtitle animate-on-scroll">আপনার মনে থাকা প্রশ্নগুলোর উত্তর এখানে খুঁজে নিন।</p>
+            <div class="faq-container">
+                <div class="faq-item animate-on-scroll"> <details> <summary><span>আমি কীভাবে প্রোডাক্ট কিনব?</span><i class="fa-solid fa-chevron-down"></i></summary> <p class="faq-answer">আমাদের ওয়েবসাইট থেকে আপনার পছন্দের প্রোডাক্টটি সিলেক্ট করে 'এখনই কিনুন' বাটনে ক্লিক করুন। এরপর পেমেন্ট সম্পন্ন করলেই আপনার প্রোডাক্ট পেয়ে যাবেন।</p> </details> </div>
+                <div class="faq-item animate-on-scroll" style="transition-delay: 0.1s;"> <details> <summary><span>পেমেন্ট করার কতক্ষণ পর ডেলিভারি পাবো?</span><i class="fa-solid fa-chevron-down"></i></summary> <p class="faq-answer">পেমেন্ট সফলভাবে সম্পন্ন হওয়ার পর সর্বোচ্চ ১০-১৫ মিনিটের মধ্যে আপনার ইমেইলে অথবা একাউন্ট ড্যাশবোর্ডে প্রোডাক্ট ডেলিভারি করে দেওয়া হয়।</p> </details> </div>
+                <div class="faq-item animate-on-scroll" style="transition-delay: 0.2s;"> <details> <summary><span>কেনা প্রোডাক্টে সমস্যা হলে কী করব?</span><i class="fa-solid fa-chevron-down"></i></summary> <p class="faq-answer">যেকোনো সমস্যায় আমাদের লাইভ চ্যাট অথবা সাপোর্ট ইমেইলে (support@riseshop.com) যোগাযোগ করুন। আমাদের সাপোর্ট টিম আপনাকে সাহায্য করার জন্য সর্বদা প্রস্তুত।</p> </details> </div>
+                <div class="faq-item animate-on-scroll" style="transition-delay: 0.3s;"> <details> <summary><span>অ্যাফিলিয়েট কমিশন কীভাবে তুলব?</span><i class="fa-solid fa-chevron-down"></i></summary> <p class="faq-answer">আপনার অ্যাফিলিয়েট ড্যাশবোর্ডে নির্দিষ্ট পরিমাণ কমিশন জমা হলে আপনি উইথড্র রিকোয়েস্ট করতে পারবেন। আমরা বিকাশ/নগদ এর মাধ্যমে পেমেন্ট করে থাকি।</p> </details> </div>
+                <div class="faq-item animate-on-scroll" style="transition-delay: 0.4s;"> <details> <summary><span>আপনাদের পেমেন্ট মেথড কী কী?</span><i class="fa-solid fa-chevron-down"></i></summary> <p class="faq-answer">আমরা বর্তমানে বিকাশ, নগদ এবং রকেট সহ সকল প্রধান মোবাইল ব্যাংকিং সেবা গ্রহণ করি।</p> </details> </div>
+            </div>
+        </section>
+
+        <!-- Community CTA Section -->
+        <section class="section community-cta" id="community">
+            <div class="animate-on-scroll">
+                <h2 class="section-title">আমাদের কমিউনিটিতে যোগ দিন</h2>
+                <p class="section-subtitle">সর্বশেষ আপডেট, অফার এবং আলোচনার জন্য আমাদের সাথে যুক্ত হন।</p>
+                <div class="community-links">
+                    <a href="#" class="btn"><i class="fa-brands fa-telegram"></i> টেলিগ্রাম</a>
+                    <a href="#" class="btn"><i class="fa-brands fa-discord"></i> ডিসকর্ড</a>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-col animate-on-scroll">
-                <h4><i class="fa-solid fa-rocket"></i> RiseShop</h4>
-                <p>ডিজিটাল প্রোডাক্টের জগতে আপনার বিশ্বস্ত সঙ্গী। আমরা গুণমান এবং গ্রাহক সন্তুষ্টিতে বিশ্বাসী।</p>
-                <div class="social-links">
-                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="#"><i class="fa-brands fa-telegram"></i></a>
-                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="footer-col animate-on-scroll" style="transition-delay: 0.1s;">
-                <h4>কুইক লিংক</h4>
-                <ul>
-                    <li><a href="#home">হোম</a></li>
-                    <li><a href="#about">আমাদের সম্পর্কে</a></li>
-                    <li><a href="#products">প্রোডাক্টস</a></li>
-                    <li><a href="#affiliate">অ্যাফিলিয়েট</a></li>
-                </ul>
-            </div>
-            <div class="footer-col animate-on-scroll" style="transition-delay: 0.2s;">
-                <h4>সাপোর্ট</h4>
-                <ul>
-                    <li><a href="#">যোগাযোগ করুন</a></li>
-                    <li><a href="#">রিপোর্ট করুন</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">শর্তাবলী</a></li>
-                </ul>
-            </div>
-            <div class="footer-col animate-on-scroll" style="transition-delay: 0.3s;">
-                <h4>যোগাযোগ</h4>
-                <ul>
-                    <li><i class="fa-solid fa-envelope" style="margin-right: 10px; color: var(--primary-glow);"></i> support@riseshop.com</li>
-                    <li><i class="fa-solid fa-phone" style="margin-right: 10px; color: var(--primary-glow);"></i> +880 123 4567890</li>
-                    <li><i class="fa-solid fa-map-marker-alt" style="margin-right: 10px; color: var(--primary-glow);"></i> ঢাকা, বাংলাদেশ</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© ২০২৪ রাইজশপ। সর্বস্বত্ব সংরক্ষিত।</p>
-        </div>
+         <div class="footer-grid">
+            <div class="footer-col animate-on-scroll"> <h4><i class="fa-solid fa-rocket"></i> RiseShop</h4> <p>ডিজিটাল প্রোডাক্টের জগতে আপনার বিশ্বস্ত সঙ্গী। আমরা গুণমান এবং গ্রাহক সন্তুষ্টিতে বিশ্বাসী।</p>  </div>
+            <div class="footer-col animate-on-scroll" style="transition-delay: 0.1s;"> <h4>কুইক লিংক</h4> <ul> <li><a href="#home">হোম</a></li> <li><a href="#about">আমাদের সম্পর্কে</a></li> <li><a href="#products">প্রোডাক্টস</a></li> 
+            <li><a href="/comiunity">কমিউনিটি</a></li><li><a href="#affiliate">অ্যাফিলিয়েট</a></li> <li><a href="#faq">FAQ</a></li> </ul> </div>
+            
+            <div class="footer-col animate-on-scroll" style="transition-delay: 0.2s;"> <h4>সাপোর্ট</h4> <ul> <li><a href="/contact">যোগাযোগ করুন</a></li> <li><a href="/report">রিপোর্ট করুন</a></li> <li><a href="/tarms">শর্তাবলী</a></li> <li><a href="/privecy">প্রাইভেসি পলিসি</a></li> </ul> </div>
+            <div class="footer-col animate-on-scroll" style="transition-delay: 0.3s;"> <h4>যোগাযোগ</h4> <ul> <li><i class="fab fa-telegram" style="margin-right: 10px; color: var(--primary-glow);"></i><a href="https://t.me/riseshopbd_bot"> @riseshopbd_bot</a></li> <li><i class="fa-solid fa-phone" style="margin-right: 10px; color: var(--primary-glow);"></i> +880 1912-107604</li> <li><i class="fa-solid fa-globe" style="margin-right: 10px; color: var(--primary-glow);"></i> <a href="#">ওয়েবে যোগাযোগ করুন</a></li> </ul> </div>
+         </div>
+         <div class="footer-bottom"> <p>© ২০২৫ RiseShop। সর্বস্বত্ব সংরক্ষিত।</p> </div>
     </footer>
 
     <script>
-        // All previous JS (Particles, Typing, Countdown, etc.) remains the same.
         document.addEventListener('DOMContentLoaded', function() {
+           
             const canvas = document.getElementById('particle-canvas');
             if (canvas) {
-                const ctx = canvas.getContext('2d');
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                let particlesArray;
-                class Particle { constructor(x, y, dX, dY, s, c) { this.x=x; this.y=y; this.directionX=dX; this.directionY=dY; this.size=s; this.color=c; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); } update() { if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX; if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY; this.x += this.directionX; this.y += this.directionY; this.draw(); } }
+                const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particlesArray; class Particle { constructor(x, y, dX, dY, s, c) { this.x=x; this.y=y; this.directionX=dX; this.directionY=dY; this.size=s; this.color=c; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); } update() { if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX; if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY; this.x += this.directionX; this.y += this.directionY; this.draw(); } }
                 function init() { particlesArray = []; let num = (canvas.height * canvas.width) / 9000; for (let i = 0; i < num; i++) { let s = (Math.random() * 2) + 1, x = (Math.random() * ((innerWidth - s * 2) - (s * 2)) + s * 2), y = (Math.random() * ((innerHeight - s * 2) - (s * 2)) + s * 2), dX = (Math.random() * .4) - .2, dY = (Math.random() * .4) - .2, c = 'rgba(0, 245, 195, 0.5)'; particlesArray.push(new Particle(x, y, dX, dY, s, c)); } }
                 function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update(); }
                 init(); animate();
                 window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; init(); });
             }
+
+            // Mobile Menu Toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            const navLinks = navMenu.querySelectorAll('a');
+            const menuIcon = menuToggle.querySelector('i');
+
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                    menuIcon.classList.toggle('fa-bars');
+                    menuIcon.classList.toggle('fa-xmark');
+                });
+            }
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        menuIcon.classList.remove('fa-xmark');
+                        menuIcon.classList.add('fa-bars');
+                    }
+                });
+            });
+
+
+            // Typing Text Effect
             const dynamicText = document.querySelector('.dynamic-text');
             if(dynamicText) {
-                const words = ["প্রোডাক্টস।", "সার্ভিস।", "হাব।"];
-                let wordIndex = 0, charIndex = 0, isDeleting = false;
+                const words = ["প্রোডাক্টস।", "সার্ভিস।", "হাব।"]; let wordIndex = 0, charIndex = 0, isDeleting = false;
                 function type() { const currentWord = words[wordIndex], typeSpeed = isDeleting ? 60 : 120; dynamicText.textContent = currentWord.substring(0, charIndex); if (!isDeleting && charIndex < currentWord.length) { charIndex++; } else if (isDeleting && charIndex > 0) { charIndex--; } else { isDeleting = !isDeleting; if (!isDeleting) { wordIndex = (wordIndex + 1) % words.length; } } setTimeout(type, typeSpeed); }
                 type();
             }
+
+            // Scroll Animation
             const scrollElements = document.querySelectorAll('.animate-on-scroll');
             const elementInView = (el) => { return el.getBoundingClientRect().top <= (window.innerHeight || document.documentElement.clientHeight) * 0.9; };
             const handleScrollAnimation = () => { scrollElements.forEach(el => { if (elementInView(el)) el.classList.add('is-visible'); }); };
             handleScrollAnimation(); window.addEventListener('scroll', handleScrollAnimation);
+
+            // Scrolled Header
             const header = document.querySelector('.header');
             if(header) window.addEventListener('scroll', () => header.classList.toggle('scrolled', window.scrollY > 50));
+            
+            // Countdown Timer
             const countdownElement = document.getElementById('countdown');
             if (countdownElement) {
                 const offerEndDate = new Date().getTime() + (3 * 24 * 60 * 60 * 1000);
                 const countdownInterval = setInterval(function() {
-                    const now = new Date().getTime(), distance = offerEndDate - now;
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24)), hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)), seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    const now = new Date().getTime(), distance = offerEndDate - now; const days = Math.floor(distance / (1000 * 60 * 60 * 24)), hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)), minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)), seconds = Math.floor((distance % (1000 * 60)) / 1000);
                     countdownElement.innerHTML = `<div class="countdown-item"><span class="time">${days}</span><span class="label">দিন</span></div><div class="countdown-item"><span class="time">${hours}</span><span class="label">ঘন্টা</span></div><div class="countdown-item"><span class="time">${minutes}</span><span class="label">মিনিট</span></div><div class="countdown-item"><span class="time">${seconds}</span><span class="label">সেকেন্ড</span></div>`;
                     if (distance < 0) { clearInterval(countdownInterval); countdownElement.innerHTML = "অফারটি শেষ হয়ে গেছে!"; }
                 }, 1000);
             }
+
+            // Review Ticker Population
+            const reviewTicker = document.getElementById('review-ticker-content');
+            if (reviewTicker) {
+                const reviews = [ { name: 'রবিন আহমেদ', text: 'অসাধারণ সার্ভিস! খুব দ্রুত ডেলিভারি পেয়েছি।' }, { name: 'সুমাইয়া ইসলাম', text: 'রাইজশপের সাপোর্ট টিম খুবই হেল্পফুল। ধন্যবাদ!' }, { name: 'ফাহিম চৌধুরী', text: 'একদম জেনুইন প্রোডাক্ট। আমি সন্তুষ্ট।' }, { name: 'তানিয়া সুলতানা', text: 'অনেকদিন ধরেই এদের থেকে কিনছি, কখনো হতাশ হইনি।' }, { name: 'সাকিব খান', text: 'বেস্ট প্রাইস, বেস্ট কোয়ালিটি। সবাইকে রিকমেন্ড করছি।' }, { name: 'নাদিয়া রহমান', text: 'পেমেন্ট প্রসেস খুব সহজ আর নিরাপদ।' }, { name: 'ইমরান হোসেন', text: 'আমার কেনা ফেসবুক আইডিটা চমৎকার কাজ করছে।' }, { name: 'আফরিন জাহান', text: 'টেলিগ্রাম প্রিমিয়াম নিয়েছি, দারুণ অভিজ্ঞতা।' }, { name: 'আল-আমিন', text: 'এদের মতো নির্ভরযোগ্য সেলার খুব কমই আছে।' }, { name: 'প্রিয়াঙ্কা দাস', text: '২৪/৭ সাপোর্ট আসলেই সত্যি। মাঝরাতেও হেল্প পেয়েছি।' }, { name: 'জাহিদ হাসান', text: 'অ্যাফিলিয়েট প্রোগ্রামটা দারুণ। আয় করা সহজ।' }, { name: 'মারিয়া আক্তার', text: 'নির্দ্বিধায় কিনতে পারেন। highly recommended!' }, { name: 'আশিকুর রহমান', text: 'আমার ব্যবসার জন্য খুবই উপকারী হয়েছে এদের সার্ভিস।' }, { name: 'ফারজানা হক', text: 'ওয়েবসাইটের ডিজাইনটা খুব সুন্দর, ব্যবহার করাও সহজ।' }, { name: 'মেহেদী হাসান', text: 'ডেলিভারি টাইম দশ মিনিটেরও কম ছিলো। ওয়াও!' } ];
+                const starRating = '<div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>';
+                let reviewHTML = '';
+                reviews.forEach(review => { reviewHTML += `<div class="review-card">${starRating}<p>"${review.text}"</p><h4>- ${review.name}</h4></div>`; });
+                reviewTicker.innerHTML = reviewHTML + reviewHTML;
+            }
+            
+            // Check login status and update auth link
+            const authLink = document.getElementById('authLink');
+            const userCookie = document.cookie.split(';').some((item) => item.trim().startsWith('userDetails='));
+            if (userCookie) {
+                authLink.textContent = 'প্রোফাইল';
+                authLink.href = 'profile.html';
+            }
         });
     </script>
 </body>
-  </html>
+</html>
