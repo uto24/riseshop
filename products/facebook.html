@@ -273,7 +273,7 @@
                 if (!userDetails) {
                     alert('এই অর্ডারটি সম্পন্ন করতে অনুগ্রহ করে আগে লগইন করুন।');
                     // Redirect to login page with callback URL
-                    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                    window.location.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
                     return;
                 }
 
