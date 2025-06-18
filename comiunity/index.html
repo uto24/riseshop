@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কমিউনিটি গ্যালারি - রাইজশপ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- THEME: Cyber-Glow / HUD Interface (RiseShop Theme) --- */
+        :root {
+            --primary-glow: #00f5c3;
+            --secondary-glow: #ff00e5;
+            --accent-glow: #6e00ff;
+            --bg-color: #0a0a14;
+            --card-bg-color: rgba(16, 20, 42, 0.7);
+            --text-color: #e0e0e0;
+            --text-secondary-color: #a0a0b0;
+            --like-color: #ff00e5; /* Magenta for likes */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+
+        /* --- Header (Copied from previous RiseShop pages) --- */
+        .header { padding: 1.2rem 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(10, 10, 20, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 245, 195, 0.2); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700; text-decoration: none; color: #fff; text-shadow: 0 0 5px var(--primary-glow); }
+        .logo i { margin-right: 8px; }
+        .main-nav a { text-decoration: none; color: var(--text-color); margin-left: 2rem; font-weight: 500; }
+        .main-nav a:hover, .main-nav a.active-nav { color: var(--primary-glow); }
+
+        /* --- Main Content & Page Title --- */
+        main { padding: 4rem 5%; }
+        .section-title { text-align: center; margin-bottom: 4rem; }
+        .section-title h2 { font-size: 2.8rem; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--primary-glow); margin-bottom: 1rem; }
+        .section-title p { font-size: 1.15rem; color: var(--text-secondary-color); max-width: 700px; margin: 0 auto; }
+
+        /* ---
+        --- NEW GALLERY STYLES (Cyber-Glow Theme)
+        --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2.5rem;
+        }
+        .post-card {
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(8px);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 245, 195, 0.15);
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        .post-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(0, 245, 195, 0.25);
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .post-header { display: flex; align-items: center; padding: 12px 16px; gap: 12px; }
+        .profile-pic { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-glow); }
+        .username { font-weight: 600; font-size: 1rem; color: #fff; }
+        .timestamp { font-size: 0.8rem; color: var(--text-secondary-color); margin-left: auto; }
+
+        .post-image-wrapper { position: relative; cursor: pointer; }
+        .post-image-wrapper img { width: 100%; height: auto; display: block; }
+        .image-like-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 80px; color: var(--like-color); text-shadow: 0 0 15px rgba(0,0,0,0.5); opacity: 0; transition: transform 0.3s ease-out, opacity 0.4s ease; pointer-events: none; }
+        .image-like-icon.show { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+
+        .post-body { padding: 12px 16px; }
+        .actions-bar { display: flex; align-items: center; margin-bottom: 8px; }
+        .actions-left { display: flex; gap: 1rem; }
+        .action-btn { background: none; border: none; cursor: pointer; padding: 0; }
+        .action-btn i { font-size: 24px; color: var(--text-color); transition: transform 0.2s ease, color 0.2s; }
+        .action-btn:hover i { color: var(--primary-glow); transform: scale(1.1); }
+        .like-btn.liked i { color: var(--like-color); animation: like-animation 0.4s ease; }
+        .bookmark-btn { margin-left: auto; }
+        .bookmark-btn.saved i { font-weight: 900; color: var(--primary-glow); }
+        @keyframes like-animation { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+
+        .likes-summary { font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; color: #fff; }
+        .caption { font-size: 0.9rem; line-height: 1.5; margin-bottom: 8px; color: var(--text-secondary-color); }
+        .caption .username { margin-right: 5px; color: var(--text-color); font-weight: 600; }
+
+        .comment-section { border-top: 1px solid rgba(0, 245, 195, 0.15); }
+        .comment-list { max-height: 150px; overflow-y: auto; padding: 12px 16px 0; }
+        .comment-item { display: flex; gap: 8px; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary-color); }
+        .comment-item strong { font-weight: 600; color: #fff; }
+        .comment-form { display: flex; border-top: 1px solid rgba(0, 245, 195, 0.15); padding: 10px 16px; }
+        .comment-input { flex-grow: 1; border: none; outline: none; background: transparent; font-size: 0.9rem; color: var(--text-color); }
+        .comment-input::placeholder { color: var(--text-secondary-color); }
+        .comment-post-btn { background: none; border: none; color: var(--primary-glow); font-weight: 600; cursor: pointer; opacity: 0.5; }
+        .comment-post-btn.active { opacity: 1; }
+
+        .notification { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--card-bg-color); color: var(--primary-glow); padding: 12px 24px; border-radius: 25px; font-size: 1rem; z-index: 1001; transition: bottom 0.5s ease-in-out; border: 1px solid var(--primary-glow); box-shadow: 0 0 20px rgba(0, 245, 195, 0.3); }
+        .notification.show { bottom: 30px; }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="logo"><i class="fa-solid fa-rocket"></i> RiseShop</a>
+        <nav class="main-nav">
+            <a href="index.html">হোম</a>
+            <a href="community.html" class="active-nav">কমিউনিটি</a>
+            <a href="profile.html">প্রোফাইল</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="section-title">
+            <h2>কমিউনিটি হাব</h2>
+            <p>আমাদের ক্রিয়েটিভ কমিউনিটির সর্বশেষ পোস্ট এবং ডিজাইনগুলো দেখুন।</p>
+        </div>
+
+        <!-- GALLERY CONTENT GRID -->
+        <div class="gallery-grid">
+            <!-- Posts will be dynamically generated by JS -->
+        </div>
+    </main>
+
+    <!-- JS Logic -->
+    <script>
+        // --- Gallery Post Data ---
+        const postsData = [
+            { id: 1, user: 'cyber_artist', avatar: 'https://i.pravatar.cc/150?img=12', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=500', likes: 182, caption: 'আমার নতুন ডিজিটাল আর্টওয়ার্ক। কেমন লাগলো জানাবেন!', timestamp: '2025-07-20T10:00:00Z' },
+            { id: 2, user: 'glitch_effect', avatar: 'https://i.pravatar.cc/150?img=25', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726a?w=500', likes: 255, caption: 'রেট্রো ভাইব... 🕹️', timestamp: '2025-07-19T18:30:00Z' },
+            { id: 3, user: 'neon_dreamer', avatar: 'https://i.pravatar.cc/150?img=31', image: 'https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=500', likes: 310, caption: 'রাতের শহরের নিয়ন আলো।', timestamp: '2025-07-18T12:00:00Z' },
+            { id: 4, user: 'code_master', avatar: 'https://i.pravatar.cc/150?img=45', image: 'https://images.unsplash.com/photo-1605379399642-870262d3d051?w=500', likes: 420, caption: 'কোডিং সেশনের একটি মুহূর্ত।', timestamp: '2025-07-17T09:00:00Z' },
+            { id: 5, user: 'future_tech', avatar: 'https://i.pravatar.cc/150?img=52', image: 'https://images.unsplash.com/photo-1526374965328-5f61d4dc18c5?w=500', likes: 389, caption: 'ডিজিটাল ওয়ার্ল্ড।', timestamp: '2025-07-16T15:45:00Z' },
+            { id: 6, user: 'space_explorer', avatar: 'https://i.pravatar.cc/150?img=60', image: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=500', likes: 512, caption: 'মহাকাশের অসীম সৌন্দর্য।', timestamp: '2025-07-15T21:00:00Z' },
+        ];
+
+        // --- Utility Functions ---
+        function setCookie(name, value, days) {
+            let expires = ""; if (days) { const date = new Date(); date.setTime(date.getTime() + (days*24*60*60*1000)); expires = "; expires=" + date.toUTCString(); }
+            document.cookie = name + "=" + (JSON.stringify(value) || "") + expires + "; path=/; SameSite=Lax";
+        }
+        function getCookie(name) {
+            const nameEQ = name + "="; const ca = document.cookie.split(';');
+            for(let i=0; i < ca.length; i++) { let c = ca[i]; while (c.charAt(0)==' ') c = c.substring(1,c.length); if (c.indexOf(nameEQ) == 0) return JSON.parse(c.substring(nameEQ.length,c.length)); }
+            return null;
+        }
+        function showNotification(message) {
+            const existing = document.querySelector('.notification'); if(existing) existing.remove();
+            const el = document.createElement('div'); el.className = 'notification'; el.textContent = message; document.body.appendChild(el);
+            setTimeout(() => el.classList.add('show'), 10);
+            setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 500); }, 2500);
+        }
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString); const now = new Date(); const diff = now - date;
+            const seconds = Math.round(diff / 1000);
+            const intervals = { বছর: 31536000, মাস: 2592000, দিন: 86400, ঘন্টা: 3600, মিনিট: 60 };
+            for (const i in intervals) { let counter = Math.floor(seconds / intervals[i]); if (counter > 0) return `${counter} ${i} আগে`; }
+            return "এইমাত্র";
+        }
+        
+        // --- Main Application Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            let likedPosts = getCookie('likedPosts') || [];
+            let savedPosts = getCookie('savedPosts') || [];
+            let allComments = JSON.parse(localStorage.getItem('riseShopComments')) || {};
+            
+            const galleryGrid = document.querySelector('.gallery-grid');
+            galleryGrid.innerHTML = ''; // Clear grid
+
+            // Generate posts from data
+            postsData.forEach(postData => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card';
+                postElement.dataset.postId = postData.id;
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <img src="${postData.avatar}" alt="Profile" class="profile-pic">
+                        <span class="username">${postData.user}</span>
+                        <span class="timestamp">${formatTimeAgo(postData.timestamp)}</span>
+                    </div>
+                    <div class="post-image-wrapper">
+                        <img src="${postData.image}" alt="Community Post">
+                        <i class="fa-solid fa-heart image-like-icon"></i>
+                    </div>
+                    <div class="post-body">
+                        <div class="actions-bar">
+                            <div class="actions-left">
+                                <button class="action-btn like-btn"><i class="far fa-heart"></i></button>
+                                <button class="action-btn share-btn"><i class="far fa-paper-plane"></i></button>
+                            </div>
+                            <button class="action-btn bookmark-btn"><i class="far fa-bookmark"></i></button>
+                        </div>
+                        <div class="likes-summary"><span class="like-count">${postData.likes}</span> likes</div>
+                        <div class="caption"><span class="username">${postData.user}</span>${postData.caption}</div>
+                    </div>
+                    <div class="comment-section">
+                        <div class="comment-list"></div>
+                        <form class="comment-form">
+                            <input type="text" class="comment-input" placeholder="কমেন্ট করুন...">
+                            <button type="submit" class="comment-post-btn" disabled>পোস্ট</button>
+                        </form>
+                    </div>
+                `;
+                galleryGrid.appendChild(postElement);
+            });
+
+
+            // Initialize each post
+            document.querySelectorAll('.post-card').forEach(card => {
+                const postId = card.dataset.postId;
+                initializePost(card, postId);
+            });
+
+            function initializePost(card, postId) {
+                if (likedPosts.includes(postId)) updateLikeButton(card.querySelector('.like-btn'), true, false);
+                if (savedPosts.includes(postId)) updateBookmarkButton(card.querySelector('.bookmark-btn'), true);
+                renderComments(card, postId);
+                setupCommentForm(card, postId);
+                setupActionListeners(card, postId);
+            }
+            
+            function updateLikeButton(button, isLiked, withAnimation) {
+                const icon = button.querySelector('i');
+                button.classList.toggle('liked', isLiked);
+                icon.classList.toggle('far', !isLiked);
+                icon.classList.toggle('fas', isLiked);
+                if (isLiked && withAnimation) { icon.classList.add('icon-animated'); setTimeout(() => icon.classList.remove('icon-animated'), 400); }
+            }
+
+            function handleLikeClick(button) {
+                const card = button.closest('.post-card'); const postId = card.dataset.postId;
+                const likeCountSpan = card.querySelector('.like-count'); let currentLikes = parseInt(likeCountSpan.textContent);
+                const isLiked = !button.classList.contains('liked');
+                updateLikeButton(button, isLiked, true);
+                likeCountSpan.textContent = isLiked ? currentLikes + 1 : currentLikes - 1;
+                if (isLiked) { if (!likedPosts.includes(postId)) likedPosts.push(postId); }
+                else { likedPosts = likedPosts.filter(id => id !== postId); }
+                setCookie('likedPosts', likedPosts, 365);
+            }
+
+            function updateBookmarkButton(button, isSaved) {
+                const icon = button.querySelector('i');
+                button.classList.toggle('saved', isSaved);
+                icon.classList.toggle('far', !isSaved); icon.classList.toggle('fas', isSaved);
+            }
+
+            function renderComments(card, postId) {
+                const commentList = card.querySelector('.comment-list'); commentList.innerHTML = '';
+                const comments = allComments[postId] || [];
+                comments.forEach(comment => {
+                    const el = document.createElement('div'); el.className = 'comment-item';
+                    el.innerHTML = `<strong>${comment.user}</strong><span>${comment.text}</span>`;
+                    commentList.appendChild(el);
+                });
+            }
+
+            function setupCommentForm(card, postId) {
+                const form = card.querySelector('.comment-form');
+                const input = card.querySelector('.comment-input');
+                const postBtn = card.querySelector('.comment-post-btn');
+                input.addEventListener('input', () => { const isActive = input.value.trim() !== ''; postBtn.disabled = !isActive; postBtn.classList.toggle('active', isActive); });
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const commentText = input.value.trim();
+                    if (!commentText) return;
+                    const newComment = { user: 'আপনি', text: commentText };
+                    if (!allComments[postId]) allComments[postId] = [];
+                    allComments[postId].push(newComment);
+                    localStorage.setItem('riseShopComments', JSON.stringify(allComments));
+                    renderComments(card, postId);
+                    input.value = '';
+                    postBtn.disabled = true; postBtn.classList.remove('active');
+                });
+            }
+
+            function setupActionListeners(card, postId) {
+                card.querySelector('.like-btn').addEventListener('click', function() { handleLikeClick(this); });
+                card.querySelector('.post-image-wrapper').addEventListener('dblclick', function() {
+                    const likeBtn = card.querySelector('.like-btn'); if (!likeBtn.classList.contains('liked')) handleLikeClick(likeBtn);
+                    const heartIcon = this.querySelector('.image-like-icon'); heartIcon.classList.add('show');
+                    setTimeout(() => heartIcon.classList.remove('show'), 800);
+                });
+                card.querySelector('.bookmark-btn').addEventListener('click', function() {
+                    const isSaved = !this.classList.contains('saved'); updateBookmarkButton(this, isSaved);
+                    if (isSaved) { if (!savedPosts.includes(postId)) savedPosts.push(postId); showNotification('পোস্ট সেভ করা হয়েছে!'); }
+                    else { savedPosts = savedPosts.filter(id => id !== postId); showNotification('পোস্ট আনসেভ করা হয়েছে।'); }
+                    setCookie('savedPosts', savedPosts, 365);
+                });
+                card.querySelector('.share-btn').addEventListener('click', async function() {
+                    const shareData = { title: 'রাইজশপ কমিউনিটির একটি পোস্ট', text: card.querySelector('.caption').textContent.trim(), url: window.location.href };
+                    if (navigator.share) await navigator.share(shareData).catch(err=>console.log(err));
+                    else { await navigator.clipboard.writeText(shareData.url); showNotification('পোস্টের লিংক কপি করা হয়েছে!'); }
+                });
+            }
+
+            // Particle JS
+            const canvas = document.getElementById('particle-canvas'); if (canvas) { const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; let particlesArray; class Particle { constructor(x, y, dX, dY, s, c) { this.x=x; this.y=y; this.directionX=dX; this.directionY=dY; this.size=s; this.color=c; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); } update() { if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX; if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY; this.x += this.directionX; this.y += this.directionY; this.draw(); } } function init() { particlesArray = []; let num = (canvas.height * canvas.width) / 9000; for (let i = 0; i < num; i++) { let s = (Math.random() * 2) + 1, x = (Math.random() * ((innerWidth - s * 2) - (s * 2)) + s * 2), y = (Math.random() * ((innerHeight - s * 2) - (s * 2)) + s * 2), dX = (Math.random() * .4) - .2, dY = (Math.random() * .4) - .2, c = 'rgba(0, 245, 195, 0.5)'; particlesArray.push(new Particle(x, y, dX, dY, s, c)); } } function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update(); } init(); animate(); window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; init(); }); }
+        });
+    </script>
+</body>
+</html>
