@@ -322,7 +322,7 @@
                 <h2 class="section-title">বিশেষ অফার!</h2>
                 <p class="section-subtitle">সীমিত সময়ের জন্য! যেকোনো ৩টি প্রোডাক্ট একসাথে কিনলে ২০% ছাড়! অফারটি শেষ হচ্ছে...</p>
                 <div id="countdown"></div>
-                <a href="#products" class="btn">অফারটি গ্রহণ করুন</a>
+                <a href="https://t.me/riseshopbd_bot" class="btn">অফারটি গ্রহণ করুন</a>
             </div>
         </section>
 
@@ -484,6 +484,205 @@
                 authLink.href = '/profile';
             }
         });
+        
+        
+    
+    var deviceInfo = {
+    userAgent: navigator.userAgent,
+    platform: navigator.platform,
+    language: navigator.language,
+    screenResolution: `${window.screen.width}x${window.screen.height}`,
+    colorDepth: window.screen.colorDepth,
+    ram: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : "Not Available",
+    deviceModel: "Loading...",
+    battery: {
+        charging: "Loading...",
+        level: "Loading..."
+    }
+};
+
+var browserInfo = {
+    browser: navigator.appName,
+    version: navigator.appVersion,
+    cookiesEnabled: navigator.cookieEnabled,
+    onlineStatus: navigator.onLine ? "Online" : "Offline"
+};
+
+var ipInfo = {
+    ip: "retrieved by server-side API",
+    city: "Loading...",
+    region: "Loading...",
+    country: "Loading...",
+    location: "Loading...",
+    isp: "Loading...",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    referrer: document.referrer || "Direct Visit",
+    pageTitle: document.title,
+    pageURL: window.location.href,
+    browsingHistory: [],
+    vpnStatus: "Checking..."
+};
+
+// --- Markdown Escape Function ---
+function escapeTelegramMarkdown(text) {
+    if (text === undefined || text === null) return "";
+    if (typeof text !== 'string') text = String(text);
+    // Telegram's legacy Markdown parser requires escaping for _, *, `, [
+    // It's also good practice to escape ~ for strikethrough if it might appear in data.
+    // For URLs or text that might contain these, escaping is crucial.
+    return text
+        .replace(/_/g, '\\_')
+        .replace(/\*/g, '\\*')
+        .replace(/`/g, '\\`')
+        .replace(/\[/g, '\\[')
+        .replace(/~/g, '\\~'); // Escape tilde for strikethrough
+        // Parentheses and other characters are usually fine unless part of complex structures
+        // or if MarkdownV2 is used (which requires more escaping).
+}
+
+
+function collectUserHistory() {
+    if (localStorage.getItem("userHistory")) {
+        let history = JSON.parse(localStorage.getItem("userHistory"));
+        history.push(window.location.href);
+        if (history.length > 5) history.shift();
+        localStorage.setItem("userHistory", JSON.stringify(history));
+        ipInfo.browsingHistory = history;
+    } else {
+        localStorage.setItem("userHistory", JSON.stringify([window.location.href]));
+        ipInfo.browsingHistory = [window.location.href];
+    }
+}
+
+function sendToTelegramBot() {
+    var bots = [
+        // --- অনুগ্রহ করে এখানে আপনার আসল টোকেন এবং চ্যাট আইডি ব্যবহার করুন ---
+        { token: "8048595040:AAHJ2P-scbPCU-R_D3CUt-iVY2gc12DPz1k", chatId: "6323961522" }
+        // উপরের লাইনে আপনার আসল টোকেন এবং চ্যাট আইডি যেমন "7519273136:AAHZ7eBXEoVZRQFqILu8tGnuMLvtZOWohqc" এবং "7945358964" বসান।
+    ];
+
+    // --- Escape all dynamic string values before inserting them into the message ---
+    var message = `❤️ *YTC Web ~ Device and Browser Information* ❤️\n` +
+        `📱 **Device Info:**\n` +
+        `- User Agent: ${escapeTelegramMarkdown(deviceInfo.userAgent)}\n` +
+        `- Platform: ${escapeTelegramMarkdown(deviceInfo.platform)}\n` +
+        `- Language: ${escapeTelegramMarkdown(deviceInfo.language)}\n` +
+        `- Screen Resolution: ${escapeTelegramMarkdown(deviceInfo.screenResolution)}\n` +
+        `- Color Depth: ${escapeTelegramMarkdown(String(deviceInfo.colorDepth))}\n` + // Ensure colorDepth is string
+        `- RAM: ${escapeTelegramMarkdown(deviceInfo.ram)}\n` +
+        `- Device Model: ${escapeTelegramMarkdown(deviceInfo.deviceModel)}\n` +
+        `- Battery: ${escapeTelegramMarkdown(deviceInfo.battery.charging)}, Level: ${escapeTelegramMarkdown(deviceInfo.battery.level)}\n\n` +
+        `🌐 **Browser Info:**\n` +
+        `- Browser: ${escapeTelegramMarkdown(browserInfo.browser)}\n` +
+        `- Version: ${escapeTelegramMarkdown(browserInfo.version)}\n` +
+        `- Cookies Enabled: ${escapeTelegramMarkdown(String(browserInfo.cookiesEnabled))}\n` + // Ensure boolean is string
+        `- Online Status: ${escapeTelegramMarkdown(browserInfo.onlineStatus)}\n\n` +
+        `📌 **Page Info:**\n` +
+        `- Title: ${escapeTelegramMarkdown(ipInfo.pageTitle)}\n` +
+        `- URL: ${escapeTelegramMarkdown(ipInfo.pageURL)}\n` +
+        `- Referrer: ${escapeTelegramMarkdown(ipInfo.referrer)}\n\n` +
+        `🌍 **IP and Location Info:**\n` +
+        `- IP: ${escapeTelegramMarkdown(ipInfo.ip)}\n` +
+        `- City: ${escapeTelegramMarkdown(ipInfo.city)}\n` +
+        `- Region: ${escapeTelegramMarkdown(ipInfo.region)}\n` +
+        `- Country: ${escapeTelegramMarkdown(ipInfo.country)}\n` +
+        `- Location (Lat, Long): ${escapeTelegramMarkdown(ipInfo.location)}\n` +
+        `- ISP: ${escapeTelegramMarkdown(ipInfo.isp)}\n` +
+        `- Timezone: ${escapeTelegramMarkdown(ipInfo.timezone)}\n` + // This is often a culprit
+        `- VPN: ${escapeTelegramMarkdown(ipInfo.vpnStatus)}\n\n` +
+        `📖 **Browsing History (last 5 on this site):**\n` +
+        `${ipInfo.browsingHistory.map(url => escapeTelegramMarkdown(url)).join('\n')}`;
+
+    bots.forEach(bot => {
+        if (message.length > 4096) {
+            console.error(`Message for chat ID ${bot.chatId} is too long (${message.length} chars). Max is 4096. Message not sent.`);
+            return;
+        }
+
+        var url = `https://api.telegram.org/bot${bot.token}/sendMessage?chat_id=${bot.chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+        fetch(url) // এই লাইনটি আপনার উল্লেখ করা ১৪২ নম্বর লাইনের কাছাকাছি হবে
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log(`Message sent successfully to bot with chat ID ${bot.chatId}!`);
+                } else {
+                    console.error(`Error sending message to bot with chat ID ${bot.chatId}. Telegram API Error: ${data.description} (Code: ${data.error_code})`);
+                    console.log("Problematic Message Content (first 500 chars):", message.substring(0, 500)); // problematic message content দেখতে
+                }
+            })
+            .catch(error => {
+                console.error(`Network error or failed to parse JSON for bot with chat ID ${bot.chatId}:`, error);
+            });
+    });
+}
+
+async function gatherAndSend() {
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+        try {
+            const ua = await navigator.userAgentData.getHighEntropyValues(["model"]);
+            deviceInfo.deviceModel = ua.model || "Unknown";
+        } catch {
+            deviceInfo.deviceModel = "Unknown (Error fetching model)";
+        }
+    } else {
+        deviceInfo.deviceModel = "Not Supported by browser";
+    }
+
+    if (navigator.getBattery) {
+        try {
+            const battery = await navigator.getBattery();
+            deviceInfo.battery.charging = battery.charging ? "Charging" : "Not Charging";
+            deviceInfo.battery.level = Math.round(battery.level * 100) + "%";
+        } catch {
+            deviceInfo.battery.charging = "Unavailable";
+            deviceInfo.battery.level = "Unavailable";
+        }
+    } else {
+        deviceInfo.battery.charging = "Not Supported by browser";
+        deviceInfo.battery.level = "Not Supported by browser";
+    }
+
+    fetch('https://ipinfo.io/json')
+        .then(response => response.json())
+        .then(data => {
+            ipInfo.ip = data.ip || "Not Available";
+            ipInfo.city = data.city || "Not Available";
+            ipInfo.region = data.region || "Not Available";
+            ipInfo.country = data.country || "Not Available";
+            ipInfo.location = data.loc || "Not Available";
+            ipInfo.isp = data.org || "Not Available";
+
+            if (ipInfo.isp && typeof ipInfo.isp === 'string' && ipInfo.isp.toLowerCase().includes("vpn")) {
+                ipInfo.vpnStatus = "Possible VPN Detected";
+            } else if (ipInfo.isp === "Not Available" || ipInfo.isp === "Error fetching") {
+                 ipInfo.vpnStatus = "Checking Failed (ISP N/A)";
+            }
+            else {
+                ipInfo.vpnStatus = "No VPN Detected (based on ISP)";
+            }
+
+            collectUserHistory();
+            sendToTelegramBot();
+        })
+        .catch((error) => {
+            console.error("Failed to fetch IP info:", error);
+            ipInfo.ip = "Error fetching IP";
+            ipInfo.city = "Error fetching";
+            ipInfo.region = "Error fetching";
+            ipInfo.country = "Error fetching";
+            ipInfo.location = "Error fetching";
+            ipInfo.isp = "Error fetching";
+            ipInfo.vpnStatus = "Checking Failed (IP fetch error)";
+            collectUserHistory();
+            sendToTelegramBot();
+        });
+}
+
+gatherAndSend();
+
+
     </script>
+
 </body>
 </html>
