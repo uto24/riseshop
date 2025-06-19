@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ফেসবুক আইডি কিনুন - রাইজশপ</title>
-    <!-- Common Styles and Fonts (Copied) -->
+    <!-- Common Styles and Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
@@ -42,6 +42,8 @@
         .category-grid .cat-name { display: block; font-size: 1.2rem; font-weight: 600; color: #fff; }
         .category-grid .cat-price { color: var(--primary-glow); font-family: 'Poppins', sans-serif; }
         .category-grid .cat-desc { font-size: 0.9rem; color: var(--text-secondary-color); }
+        .stock-info { display: none; margin-top: 0.5rem; font-size: 0.9rem; color: var(--primary-glow); font-weight: 600; }
+        .category-grid input[type="radio"]:checked + label + .stock-info { display: block; }
 
         .form-group { margin-top: 1.5rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-secondary-color); }
@@ -64,6 +66,24 @@
         .btn-submit { display: block; width: 100%; padding: 1rem; border: 2px solid var(--primary-glow); border-radius: 50px; font-weight: 700; transition: all 0.4s ease; background: var(--primary-glow); color: var(--bg-color); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; font-size: 1.1rem; margin-top: 2rem; }
         .btn-submit:disabled { background: #555; border-color: #555; color: #999; cursor: not-allowed; }
 
+        /* --- NEW: Review Section Styles --- */
+        .review-section { margin-top: 4rem; text-align: center; }
+        .review-ticker-wrap { overflow: hidden; padding: 2rem 0; position: relative; width: 100%; -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+        .review-ticker { display: flex; gap: 1.5rem; width: fit-content; animation: scroll-left 120s linear infinite; }
+        .review-ticker-wrap:hover .review-ticker { animation-play-state: paused; }
+        @keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .review-card { flex-shrink: 0; width: 320px; padding: 1.5rem; background: var(--card-bg-color); border-radius: 10px; border: 1px solid rgba(0, 245, 195, 0.15); }
+        .review-card .stars { color: #ffc107; margin-bottom: 0.75rem; }
+        .review-card p { color: var(--text-secondary-color); font-style: italic; margin-bottom: 1rem; text-align: left; }
+        .review-card h4 { color: #fff; font-weight: 600; text-align: left; }
+
+        /* --- NEW: Short Footer Styles --- */
+        .short-footer { padding: 2rem 5%; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 4rem; }
+        .footer-links { margin-bottom: 1rem; }
+        .footer-links a { color: var(--text-secondary-color); text-decoration: none; margin: 0 1rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--primary-glow); }
+        .footer-copyright { color: var(--text-secondary-color); font-size: 0.9rem; }
+        
         @media (max-width: 992px) {
             .buy-grid { grid-template-columns: 1fr; }
         }
@@ -80,23 +100,29 @@
         <h1 class="page-title">ফেসবুক আইডি কিনুন</h1>
         <div class="buy-grid">
             
-            <div class="product-details">
+            
+              <div class="product-details">
                 <h2 class="card-title"><i class="fa-brands fa-facebook-f"></i>আইডির ফিচারসমূহ</h2>
                 <ul class="features-list">
-                    <li><i class="fa-solid fa-check-circle"></i>সম্পূর্ণ ভেরিফাইড (PVA) এবং নিরাপদ প্রোফাইল।</li>
+                   <li><i class="fa-solid fa-check-circle"></i>স্পেশাল SIR Method সিস্টেম ব্যাবহার করা হয়েছে বিধায় এই আইডিগুলো ১০০% নিরাপদ!</li>
+                           <li><i class="fa-solid fa-check-circle"></i>আইডিগুলো ট্র্যাক করা যায় না, এছাড়া এগুলো SIR Method এর জন্য যেকোনো কিছু করলেও ব্যান হয় না। 
+                           </li>
+                                   <li><i class="fa-solid fa-check-circle"></i>আইডি ডেলিভারির পর আইডিটি সম্পুর্ন যে ব্যাক্তি কিনেছে তার, পরবর্তীতে RiseShop আইডিতে আর লগইন করে না!</li>
+                                           <li><i class="fa-solid fa-check-circle"></i>আমরা দিচ্ছি Two Fector Code সহো আইডি, পরবর্তীতে আপনি পাসওয়ার্ড পরিবর্তন করতে পারবেন । </li>
+                                                   <li><i class="fa-solid fa-check-circle"></i>আমাদের কাছে 17000+ Facebook Id আছে। </li>
+                                                   <li><i class="fa-solid fa-check-circle"></i>কোনো কারণে আইডি কিছু হলে 90 দিনের মধ্যে রিপ্লেসমেন্ট</li>
+                                                   
+                                                   <li><i class="fa-solid fa-check-circle"></i>আইডির ক্ষেত্র আপনার কোনো নাম্বার / ইমেইল লাগবে ন। </li>
+                           <li><i class="fa-solid fa-check-circle"></i>সম্পূর্ণ ভেরিফাইড (PVA) এবং নিরাপদ প্রোফাইল।</li>
                     <li><i class="fa-solid fa-check-circle"></i>মার্কেটিং ও ব্যক্তিগত ব্যবহারের জন্য উপযোগী।</li>
                     <li><i class="fa-solid fa-check-circle"></i>যেকোনো দেশের আইপি থেকে ব্যবহারযোগ্য।</li>
                     <li><i class="fa-solid fa-check-circle"></i>প্রতিটি আইডির সাথে প্রোফাইল ছবি ও বেসিক তথ্য দেওয়া থাকে।</li>
-                    <li><i class="fa-solid fa-check-circle"></i>আইডি নষ্ট হওয়ার ঝুঁকি কম এবং রিপ্লেসমেন্ট গ্যারান্টি (শর্ত প্রযোজ্য)।</li>
+                    
                 </ul>
 
-                <h2 class="card-title" style="margin-top: 2rem;"><i class="fa-solid fa-truck-fast"></i>ডেলিভারি প্রসেস</h2>
-                <ul class="features-list">
-                    <li><i class="fa-solid fa-envelope-circle-check"></i>পেমেন্ট সম্পন্ন হওয়ার ১০-১৫ মিনিটের মধ্যে আপনার দেওয়া ইমেইলে ডেলিভারি করা হবে।</li>
-                    <li><i class="fa-solid fa-file-alt"></i>ইমেইলে আপনি একটি টেক্সট ফাইল পাবেন যেখানে আইডির ইউজারনেম, পাসওয়ার্ড এবং কুকিজ থাকবে।</li>
-                    <li><i class="fa-solid fa-headset"></i>যেকোনো সমস্যায় আমাদের ২৪/৭ লাইভ সাপোর্টে যোগাযোগ করতে পারবেন।</li>
-                </ul>
+                
             </div>
+          
 
             <div class="purchase-form">
                 <form id="buyForm">
@@ -109,24 +135,28 @@
                                 <span class="cat-name">বেসিক আইডি <span class="cat-price">৳১৫০</span></span>
                                 <span class="cat-desc">সাধারণ ব্যবহারের জন্য, ৭ দিনের পুরনো।</span>
                             </label>
-                            
+                            <div class="stock-info">In Stock: 990+ Left</div>
+
                             <input type="radio" id="cat2" name="id_category" value="300">
                             <label for="cat2">
                                 <span class="cat-name">প্রিমিয়াম আইডি <span class="cat-price">৳৩০০</span></span>
                                 <span class="cat-desc">মার্কেটিং উপযোগী, ৩০ দিনের পুরনো, ফ্রেন্ডস সহ।</span>
                             </label>
+                            <div class="stock-info">In Stock: 750+ Left</div>
 
                             <input type="radio" id="cat3" name="id_category" value="500">
                             <label for="cat3">
                                 <span class="cat-name">ওল্ড আইডি <span class="cat-price">৳৫০০</span></span>
                                 <span class="cat-desc">১+ বছর পুরনো, শক্তিশালী প্রোফাইল।</span>
                             </label>
+                            <div class="stock-info">In Stock: 480+ Left</div>
 
                             <input type="radio" id="cat4" name="id_category" value="800">
                             <label for="cat4">
                                 <span class="cat-name">এজেন্সি প্যাক <span class="cat-price">৳৮০০</span></span>
                                 <span class="cat-desc">২+ বছর পুরনো, বিজনেস ম্যানেজার ভেরিফাইড।</span>
                             </label>
+                            <div class="stock-info">In Stock: 120+ Left</div>
                         </div>
                     </div>
 
@@ -172,7 +202,42 @@
                 </form>
             </div>
         </div>
+        
+        <br><br>
+          <div class="product-details">
+              
+
+                <h2 class="card-title" style="margin-top: 2rem;"><i class="fa-solid fa-truck-fast"></i>ডেলিভারি প্রসেস</h2>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-envelope-circle-check"></i>পেমেন্ট সম্পন্ন হওয়ার ১০-১৫ মিনিটের মধ্যে আপনার দেওয়া ইমেইলে ডেলিভারি করা হবে।</li>
+                    <li><i class="fa-solid fa-file-alt"></i>ইমেইলে আপনি একটি টেক্সট ফাইল পাবেন যেখানে আইডির ইউজারনেম, পাসওয়ার্ড এবং কুকিজ থাকবে।</li>
+                    <li><i class="fa-solid fa-headset"></i>যেকোনো সমস্যায় আমাদের ২৪/৭ লাইভ সাপোর্টে যোগাযোগ করতে পারবেন।</li>
+                </ul>
+            </div>
+
+        <!-- NEW: Review Section -->
+        <section class="review-section">
+            <h2 class="card-title" style="text-align:center; border-bottom: none;"><i class="fa-solid fa-star"></i> ২৫+ গ্রাহকদের মতামত</h2>
+            <div class="review-ticker-wrap">
+                <div class="review-ticker" id="review-ticker-content">
+                    <!-- JS will populate this -->
+                </div>
+            </div>
+        </section>
     </main>
+    
+    <!-- NEW: Short Footer -->
+    <footer class="short-footer">
+        <div class="footer-links">
+            <a href="/">হোম</a>
+            <a href="/about">আমাদের সম্পর্কে</a>
+            <a href="/contact">যোগাযোগ</a>
+            <a href="/faq">FAQ</a>
+        </div>
+        <div class="footer-copyright">
+            © ২০২৫ রাইজশপ। সর্বস্বত্ব সংরক্ষিত। v4.2
+        </div>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -190,6 +255,7 @@
             const submitBtn = document.getElementById('submitBtn');
             const deliveryEmailInput = document.getElementById('deliveryEmail');
             const headerAuthBtn = document.getElementById('headerAuthBtn');
+            const reviewTicker = document.getElementById('review-ticker-content');
 
             let quantity = 1;
             const validCoupons = ['652', '658'];
@@ -207,13 +273,10 @@
             if (userCookie) {
                 try {
                     userDetails = JSON.parse(decodeURIComponent(userCookie));
-                    // Populate email and update header button
                     deliveryEmailInput.value = userDetails.email;
                     headerAuthBtn.href = '/profile';
                     headerAuthBtn.textContent = 'প্রোফাইল';
-                } catch (e) {
-                    console.error("Cookie parsing error:", e);
-                }
+                } catch (e) { console.error("Cookie parsing error:", e); }
             } else {
                  headerAuthBtn.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
                  headerAuthBtn.textContent = 'লগইন';
@@ -222,22 +285,12 @@
             // --- Main Calculation Function ---
             function updatePrice() {
                 const selectedCategory = document.querySelector('input[name="id_category"]:checked');
-                
-                if (!selectedCategory) {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'ক্যাটাগরি সিলেক্ট করুন';
-                    return;
-                }
-                
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'পেমেন্ট করুন';
-
+                if (!selectedCategory) { submitBtn.disabled = true; submitBtn.textContent = 'ক্যাটাগরি সিলেক্ট করুন'; return; }
+                submitBtn.disabled = false; submitBtn.textContent = 'পেমেন্ট করুন';
                 const pricePerItem = parseFloat(selectedCategory.value);
                 const subtotal = pricePerItem * quantity;
-                
                 let discount = 0;
                 const couponCode = couponInput.value.trim();
-
                 if (validCoupons.includes(couponCode) && subtotal > 50) {
                     discount = subtotal * 0.10;
                     couponMessageEl.textContent = 'কুপন সফলভাবে প্রয়োগ করা হয়েছে!';
@@ -248,12 +301,8 @@
                 } else if (couponCode && subtotal <= 50) {
                     couponMessageEl.textContent = '৳৫০ এর বেশি কেনাকাটায় কুপন প্রযোজ্য।';
                     couponMessageEl.className = 'error';
-                } else {
-                    couponMessageEl.textContent = '';
-                }
-
+                } else { couponMessageEl.textContent = ''; }
                 const total = subtotal - discount;
-
                 subtotalEl.textContent = `৳${subtotal.toFixed(2)}`;
                 discountEl.textContent = `- ৳${discount.toFixed(2)}`;
                 totalEl.textContent = `৳${total.toFixed(2)}`;
@@ -268,47 +317,31 @@
             // --- Form Submission ---
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-
-                // --- NEW: Check login on submit ---
-                if (!userDetails) {
-                    alert('এই অর্ডারটি সম্পন্ন করতে অনুগ্রহ করে আগে লগইন করুন।');
-                    // Redirect to login page with callback URL
-                    window.location.href = `/login?redirect=${encodeURIComponent(window.location.href)}`;
-                    return;
-                }
-
+                if (!userDetails) { alert('এই অর্ডারটি সম্পন্ন করতে অনুগ্রহ করে আগে লগইন করুন।'); window.location.href = `/login?redirect=${encodeURIComponent(window.location.href)}`; return; }
                 const selectedCategoryEl = document.querySelector('input[name="id_category"]:checked');
-                if (!selectedCategoryEl) {
-                    alert('অনুগ্রহ করে একটি আইডি ক্যাটাগরি সিলেক্ট করুন।');
-                    return;
-                }
-                
-                if (!deliveryEmailInput.value) {
-                    alert('অনুগ্রহ করে ডেলিভারি ইমেইল দিন।');
-                    return;
-                }
-
+                if (!selectedCategoryEl) { alert('অনুগ্রহ করে একটি আইডি ক্যাটাগরি সিলেক্ট করুন।'); return; }
+                if (!deliveryEmailInput.value) { alert('অনুগ্রহ করে ডেলিভারি ইমেইল দিন।'); return; }
                 const categoryLabel = document.querySelector(`label[for="${selectedCategoryEl.id}"] .cat-name`).textContent;
                 const totalText = totalEl.textContent;
-
-                const orderDetails = {
-                    productName: 'Facebook ID',
-                    category: categoryLabel,
-                    quantity: quantity,
-                    totalPrice: totalText,
-                    deliveryEmail: deliveryEmailInput.value,
-                    couponUsed: couponInput.value.trim(),
-                    timestamp: new Date().toISOString()
-                };
-
+                const orderDetails = { productName: 'Facebook ID', category: categoryLabel, quantity: quantity, totalPrice: totalText, deliveryEmail: deliveryEmailInput.value, couponUsed: couponInput.value.trim(), timestamp: new Date().toISOString() };
                 const d = new Date();
                 d.setTime(d.getTime() + (15 * 60 * 1000));
                 let expires = "expires=" + d.toUTCString();
                 document.cookie = `orderDetails=${JSON.stringify(orderDetails)};${expires};path=/`;
-
                 alert('আপনার অর্ডারটি গ্রহণ করা হয়েছে। এখন পেমেন্ট পেজে নিয়ে যাওয়া হচ্ছে...');
-                window.location.href = '/payment'; // You need to create this page
+                window.location.href = '/payment';
             });
+
+            // --- Review Ticker Population ---
+            if (reviewTicker) {
+                const reviews = [ { name: 'রবিন আহমেদ', text: 'অসাধারণ সার্ভিস! খুব দ্রুত ডেলিভারি পেয়েছি।' }, { name: 'সুমাইয়া ইসলাম', text: 'রাইজশপের সাপোর্ট টিম খুবই হেল্পফুল। ধন্যবাদ!' }, { name: 'ফাহিম চৌধুরী', text: 'একদম জেনুইন প্রোডাক্ট। আমি সন্তুষ্ট।' }, { name: 'তানিয়া সুলতানা', text: 'অনেকদিন ধরেই এদের থেকে কিনছি, কখনো হতাশ হইনি।' }, { name: 'সাকিব খান', text: 'বেস্ট প্রাইস, বেস্ট কোয়ালিটি। সবাইকে রিকমেন্ড করছি।' }, { name: 'নাদিয়া রহমান', text: 'পেমেন্ট প্রসেস খুব সহজ আর নিরাপদ।' }, { name: 'ইমরান হোসেন', text: 'আমার কেনা ফেসবুক আইডিটা চমৎকার কাজ করছে।' }, { name: 'আফরিন জাহান', text: 'টেলিগ্রাম প্রিমিয়াম নিয়েছি, দারুণ অভিজ্ঞতা।' }, { name: 'আল-আমিন', text: 'এদের মতো নির্ভরযোগ্য সেলার খুব কমই আছে।' }, { name: 'প্রিয়াঙ্কা দাস', text: '২৪/৭ সাপোর্ট আসলেই সত্যি। মাঝরাতেও হেল্প পেয়েছি।' }, { name: 'জাহিদ হাসান', text: 'অ্যাফিলিয়েট প্রোগ্রামটা দারুণ। আয় করা সহজ।' }, { name: 'মারিয়া আক্তার', text: 'নির্দ্বিধায় কিনতে পারেন। highly recommended!' }, { name: 'আশিকুর রহমান', text: 'আমার ব্যবসার জন্য খুবই উপকারী হয়েছে এদের সার্ভিস।' }, { name: 'ফারজানা হক', text: 'ওয়েবসাইটের ডিজাইনটা খুব সুন্দর, ব্যবহার করাও সহজ।' }, { name: 'মেহেদী হাসান', text: 'ডেলিভারি টাইম দশ মিনিটেরও কম ছিলো। ওয়াও!' } ];
+                const moreReviews = [ { name: 'কামরুল', text: 'ওল্ড আইডিটা বেশ কাজের।' }, { name: 'সোহেল', text: 'প্রিমিয়াম আইডি নিয়েছি, ভালোই চলছে।' }, { name: 'নদী', text: 'আমার এজেন্সির জন্য অনেকগুলো আইডি নিয়েছি।' }, { name: 'আকাশ', text: 'দামটা একটু বেশি মনে হলেও কোয়ালিটি ভালো।' }, { name: 'তাসনিম', text: 'ভেরিফাইড আইডি গুলো আসলেই অনেক কাজের।' }, { name: 'রাকিব', text: 'সাপোর্ট খুব দ্রুত উত্তর দেয়।' }, { name: 'লিমন', text: 'কুপন ব্যবহার করে ডিসকাউন্ট পেয়েছি, ধন্যবাদ।' }, { name: 'প্রীতি', text: 'আমার বন্ধুর রেফারেন্সে এসেছি, ভালো লেগেছে।' }, { name: 'শুভ', text: 'আমি একজন মার্কেটার, আমার জন্য পারফেক্ট।' }, { name: 'মীম', text: 'নির্ভরযোগ্য একটি প্ল্যাটফর্ম।' } ];
+                const allReviews = reviews.concat(moreReviews);
+                const starRating = '<div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>';
+                let reviewHTML = '';
+                allReviews.forEach(review => { reviewHTML += `<div class="review-card">${starRating}<p>"${review.text}"</p><h4>- ${review.name}</h4></div>`; });
+                reviewTicker.innerHTML = reviewHTML + reviewHTML; // Duplicate for seamless loop
+            }
 
             updatePrice();
             
